@@ -854,8 +854,23 @@ table tbody tr:hover {
 .td-content .taxonomy-terms-article {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0.875rem 0 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--krkn-text-muted);
+  overflow: visible;
+
+  // Docsy's icon + "Categories:" / "Tags:" label
+  i,
+  svg,
+  > span:first-of-type {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    color: var(--krkn-text-muted);
+  }
 
   a {
     display: inline-flex !important;
@@ -864,7 +879,8 @@ table tbody tr:hover {
     color: var(--krkn-text-muted) !important;
     border: 1px solid var(--krkn-border-subtle) !important;
     border-radius: 9999px !important;
-    padding: 0.25rem 0.75rem !important;
+    padding: 0.2rem 0.75rem !important;
+    line-height: 1.5;
     font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none !important;
