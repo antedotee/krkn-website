@@ -4,9 +4,11 @@ Critical constraints earned from inspections:
   - Must preserve the original column layout (corpus has 6 distinct shapes)
   - Must only touch content between markers — leave everything else alone
   - Must produce stable output (re-running on same input is a no-op)
-  - Must select first-column semantics from the existing header:
-      "Parameter" → variable (env var, krkn-hub-style)
-      "Argument" / "Option" → name (CLI flag, krknctl-style)
+  - Must select first-column semantics based on the VARIANT (tab file), not
+    just the header text — both tab flavors use "Parameter" but mean
+    different things:
+      krkn-hub variant: "Parameter" column → variable (NAMESPACE)
+      krknctl variant:  "Parameter" column → name (rendered as `--namespace`)
 """
 from __future__ import annotations
 
@@ -15,17 +17,42 @@ import re
 from extractors.krkn_hub import Parameter
 
 
-# Map from existing column header (case-insensitive, normalized) → which
-# Parameter attribute to source the cell value from.
-_COLUMN_TO_FIELD: dict[str, str] = {
-    "parameter": "variable",     # env var name (krkn-hub tabs)
-    "argument": "name",           # CLI flag, kebab-case (krknctl tabs)
-    "option": "name",             # also CLI flag style
+VARIANT_KRKN_HUB = "krkn-hub"
+VARIANT_KRKNCTL = "krknctl"
+
+# Per-variant rules for the "Parameter" column. Other columns are
+# variant-agnostic (description/type/default/required map identically).
+_PARAMETER_COL_FIELD: dict[str, str] = {
+    VARIANT_KRKN_HUB: "variable",   # env var name (NAMESPACE)
+    VARIANT_KRKNCTL: "name",        # CLI flag stem (namespace) — `--` prepended at render time
+}
+
+# Columns whose meaning doesn't depend on variant. Argument/Option always
+# mean CLI flag (no variant overrides them).
+_COLUMN_TO_FIELD_FIXED: dict[str, str] = {
+    "argument": "name",
+    "option": "name",
     "description": "description",
     "type": "type",
     "default": "default",
     "default value": "default",
     "required": "required",
+}
+
+# Boolean rendering convention per variant. krknctl corpus uses Yes/No;
+# krkn-hub corpus uses lowercase true/false.
+_BOOL_FORMAT: dict[str, tuple[str, str]] = {
+    VARIANT_KRKN_HUB: ("true", "false"),
+    VARIANT_KRKNCTL: ("Yes", "No"),
+}
+
+
+# Legacy compat — many existing tests reference _COLUMN_TO_FIELD directly.
+# Keep the old "Parameter" → variable mapping as the default so backward-
+# compatible callers (variant defaults to krkn-hub) get the same answer.
+_COLUMN_TO_FIELD: dict[str, str] = {
+    "parameter": _PARAMETER_COL_FIELD[VARIANT_KRKN_HUB],
+    **_COLUMN_TO_FIELD_FIXED,
 }
 
 # Match the AUTO:START / AUTO:END region. Both markers may have whitespace
@@ -49,10 +76,20 @@ _SEPARATOR_RE = re.compile(
 )
 
 
-def map_field_to_column(column_header: str) -> str | None:
+def map_field_to_column(
+    column_header: str, variant: str = VARIANT_KRKN_HUB,
+) -> str | None:
     """Given an existing column header, return the Parameter attribute to
-    use as the cell value (or None if we don't track this column)."""
-    return _COLUMN_TO_FIELD.get(column_header.strip().lower())
+    use as the cell value (or None if we don't track this column).
+
+    For the "Parameter" column specifically, the answer depends on the
+    variant — the same header text means different things in different
+    tab files. All other columns are variant-agnostic.
+    """
+    key = column_header.strip().lower()
+    if key == "parameter":
+        return _PARAMETER_COL_FIELD.get(variant, _PARAMETER_COL_FIELD[VARIANT_KRKN_HUB])
+    return _COLUMN_TO_FIELD_FIXED.get(key)
 
 
 def _split_table_row(line: str) -> list[str]:
@@ -90,18 +127,37 @@ def _escape_pipe(s: str) -> str:
     return str(s).replace("|", "\\|")
 
 
-def _value_for_column(param: Parameter, column_header: str) -> str:
+def _value_for_column(
+    param: Parameter, column_header: str, variant: str = VARIANT_KRKN_HUB,
+) -> str:
     """Return the cell value for `param` in the column named `column_header`.
 
-    Empty string for columns we don't track (caller decides what to do —
-    we render an empty cell to preserve column count).
+    Variant-aware:
+      - krknctl variant + "Parameter" column → render as `` `--<name>` ``
+        (CLI-flag-with-backticks, matching the krknctl corpus convention)
+      - krknctl variant + bool → "Yes"/"No"
+      - krkn-hub variant + bool → "true"/"false"
     """
-    attr = map_field_to_column(column_header)
+    attr = map_field_to_column(column_header, variant=variant)
     if attr is None:
         return ""
     val = getattr(param, attr)
+
     if isinstance(val, bool):
-        return "true" if val else "false"
+        true_str, false_str = _BOOL_FORMAT.get(
+            variant, _BOOL_FORMAT[VARIANT_KRKN_HUB],
+        )
+        return true_str if val else false_str
+
+    if (
+        variant == VARIANT_KRKNCTL
+        and column_header.strip().lower() == "parameter"
+        and attr == "name"
+        and str(val)
+    ):
+        # krknctl convention: ``--<name>`` wrapped in backticks
+        return f"`--{val}`"
+
     return str(val)
 
 
@@ -109,6 +165,7 @@ def render_table_rows(
     params: list[Parameter],
     columns: list[str],
     has_outer_pipes: bool = True,
+    variant: str = VARIANT_KRKN_HUB,
 ) -> list[str]:
     """Render data rows (NOT header or separator) for the given column layout.
 
@@ -117,10 +174,15 @@ def render_table_rows(
     rstrip lost trailing empty cells, breaking column alignment.
 
     `has_outer_pipes=True` produces `| a | b | c |`; False produces `a | b | c`.
+
+    `variant` selects column semantics (see module docstring).
     """
     rows = []
     for p in params:
-        cells = [_escape_pipe(_value_for_column(p, c)) for c in columns]
+        cells = [
+            _escape_pipe(_value_for_column(p, c, variant=variant))
+            for c in columns
+        ]
         # Build a guaranteed N-cell row using explicit cell-by-cell joining
         if has_outer_pipes:
             row = "| " + " | ".join(cells) + " |"
@@ -143,9 +205,14 @@ def regenerate_table(
     text: str,
     params: list[Parameter],
     marker_id: str = "params",
+    variant: str = VARIANT_KRKN_HUB,
 ) -> str:
     """Rewrite the parameter table inside `<!-- AUTO:START id="..." -->`
     with rows derived from `params`, preserving the original column layout.
+
+    `variant` controls "Parameter" column semantics and boolean formatting.
+    Caller (regen/orchestrate.py) picks the variant from the target file name
+    (`_tab-krkn-hub.md` → krkn-hub; `_tab-krknctl.md` → krknctl).
 
     Returns the original text unchanged if:
       - markers don't exist
@@ -183,7 +250,11 @@ def regenerate_table(
     has_outer_pipes = _detect_outer_pipe_style(header_line)
 
     # Render new data rows, matching the outer-pipe style of the header.
-    new_rows = render_table_rows(params, columns, has_outer_pipes=has_outer_pipes)
+    new_rows = render_table_rows(
+        params, columns,
+        has_outer_pipes=has_outer_pipes,
+        variant=variant,
+    )
 
     pre_table = body_lines[:header_idx]
 

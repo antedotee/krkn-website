@@ -242,6 +242,97 @@ class TestRegenerateTable:
         # New row added
         assert "NEW_FLAG" in result
 
+    # === Slice 1B post-Slice-2.5 bug: krknctl variant ===
+
+    def test_krknctl_variant_uses_cli_flag_in_parameter_column(self):
+        """In the krknctl tab, the 'Parameter' column header actually means
+        CLI flag (`--namespace`), not env var (`NAMESPACE`). The regen must
+        pick the right field based on the variant hint."""
+        params = [
+            Parameter(name="namespace", variable="NAMESPACE", type="string",
+                      default="openshift-*", required=False, description="ns"),
+        ]
+        original = dedent("""\
+            <!-- AUTO:START id="params" -->
+            | Parameter      | Description    | Type      | Required |  Default |
+            | --- | --- | --- | --- | --- |
+            `--namespace` | old desc | string | No | openshift-* |
+            <!-- AUTO:END -->
+            """)
+        result = regenerate_table(
+            original, params=params, marker_id="params",
+            variant="krknctl",
+        )
+        # CLI flag rendered with `--` prefix, wrapped in backticks (corpus convention)
+        assert "`--namespace`" in result
+        # Env-var form must NOT appear in the data row
+        for line in result.splitlines():
+            if "--namespace" in line:
+                assert "NAMESPACE" not in line
+                break
+
+    def test_krknctl_variant_renders_boolean_as_yes_no(self):
+        params = [
+            Parameter(name="ns", variable="NS", type="string", default="",
+                      required=True, description="."),
+            Parameter(name="opt", variable="OPT", type="string", default="",
+                      required=False, description="."),
+        ]
+        original = dedent("""\
+            <!-- AUTO:START id="params" -->
+            | Parameter | Description | Required |
+            | --- | --- | --- |
+            <!-- AUTO:END -->
+            """)
+        result = regenerate_table(
+            original, params=params, marker_id="params", variant="krknctl",
+        )
+        # krknctl corpus convention: Yes/No, not true/false
+        assert "Yes" in result
+        assert "No" in result
+        assert "true" not in result
+        assert "false" not in result
+
+    def test_krknhub_variant_keeps_env_var_in_parameter_column(self):
+        """Existing krkn-hub behavior remains unchanged when variant='krkn-hub'
+        (the default if not specified)."""
+        params = [
+            Parameter(name="namespace", variable="NAMESPACE", type="string",
+                      default="default", required=False, description="ns"),
+        ]
+        original = dedent("""\
+            <!-- AUTO:START id="params" -->
+            Parameter | Description | Type | Default
+            --------- | ----------- | ---- | -------
+            <!-- AUTO:END -->
+            """)
+        result = regenerate_table(
+            original, params=params, marker_id="params", variant="krkn-hub",
+        )
+        # Env-var name should be used; no `--` prefix, no backticks
+        assert "NAMESPACE" in result
+        assert "--namespace" not in result
+        # No `--namespace`-style anywhere in the data row
+        for line in result.splitlines():
+            if "NAMESPACE" in line and "Description" not in line:
+                assert "`" not in line
+
+    def test_default_variant_is_krkn_hub_for_backward_compat(self):
+        """Calls without variant= must keep producing krkn-hub output."""
+        params = [
+            Parameter(name="ns", variable="NS", type="string", default="",
+                      required=False, description="."),
+        ]
+        original = dedent("""\
+            <!-- AUTO:START id="params" -->
+            | Parameter | Description | Default |
+            | --- | --- | --- |
+            <!-- AUTO:END -->
+            """)
+        result = regenerate_table(original, params=params, marker_id="params")
+        assert "NS" in result  # env-var form
+        assert "--ns" not in result
+
     # === Slice 1B inspection finding R1 — empty trailing cell ===
 
     def test_empty_trailing_cell_preserves_column_count(self):

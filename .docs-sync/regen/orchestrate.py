@@ -9,7 +9,11 @@ from pathlib import Path
 
 from digest.extract_coverage import jaccard, tokenize_directory
 from extractors.krkn_hub import ChangeSet, ModifiedScenario
-from regen.parameter_table import regenerate_table
+from regen.parameter_table import (
+    VARIANT_KRKN_HUB,
+    VARIANT_KRKNCTL,
+    regenerate_table,
+)
 
 
 # Score below which we won't claim a confident match (defensive against
@@ -19,6 +23,13 @@ _MATCH_THRESHOLD = 0.5
 # Doc tabs the krkn-hub extractor's data populates.
 # Keep this list explicit — different upstreams target different tabs.
 KRKN_HUB_TARGET_TABS = ("_tab-krkn-hub.md", "_tab-krknctl.md")
+
+# Per-tab variant. Used to pick the right "Parameter"-column field and the
+# right boolean formatting in `regenerate_table`.
+_TAB_VARIANT: dict[str, str] = {
+    "_tab-krkn-hub.md": VARIANT_KRKN_HUB,
+    "_tab-krknctl.md": VARIANT_KRKNCTL,
+}
 
 
 def find_target_doc_dir(
@@ -86,6 +97,7 @@ def apply_regen_to_modified_scenarios(
                 original,
                 params=modified.head.parameters,
                 marker_id="params",
+                variant=_TAB_VARIANT.get(tab_name, VARIANT_KRKN_HUB),
             )
             if new_content != original:
                 tab_file.write_text(new_content, encoding="utf-8")
