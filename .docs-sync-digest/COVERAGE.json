@@ -1,0 +1,114 @@
+{
+  "directories_without_scenario_type": [
+    "aurora-disruption",
+    "cpu-hog-scenario",
+    "dns-outage",
+    "efs-disruption",
+    "etcd-split-brain",
+    "io-hog-scenario",
+    "kubevirt-vm-outage-scenario",
+    "managed-cluster-scenario",
+    "memory-hog-scenario",
+    "node-interface-down",
+    "node-network-filter",
+    "pod-network-filter",
+    "power-outage-scenarios"
+  ],
+  "matched": [
+    {
+      "directory": "application-outage",
+      "scenario_type": "application_outages_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "container-scenario",
+      "scenario_type": "container_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "hog-scenarios",
+      "scenario_type": "hog_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "http-load-scenario",
+      "scenario_type": "http_load_scenario",
+      "score": 1.0
+    },
+    {
+      "directory": "http-load-scenario",
+      "scenario_type": "http_load_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "network-chaos-ng-scenarios",
+      "scenario_type": "network_chaos_ng_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "network-chaos-scenario",
+      "scenario_type": "network_chaos_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "node-scenarios",
+      "scenario_type": "node_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "pod-scenario",
+      "scenario_type": "pod_disruption_scenarios",
+      "score": 0.5
+    },
+    {
+      "directory": "pod-network-scenario",
+      "scenario_type": "pod_network_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "pvc-scenario",
+      "scenario_type": "pvc_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "service-disruption-scenarios",
+      "scenario_type": "service_disruption_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "service-hijacking-scenario",
+      "scenario_type": "service_hijacking_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "syn-flood-scenario",
+      "scenario_type": "syn_flood_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "time-scenarios",
+      "scenario_type": "time_scenarios",
+      "score": 1.0
+    },
+    {
+      "directory": "zone-outage-scenarios",
+      "scenario_type": "zone_outages_scenarios",
+      "score": 1.0
+    }
+  ],
+  "scenario_types_without_directory": [
+    {
+      "best_candidate": "managed-cluster-scenario",
+      "best_score": 0.25,
+      "scenario_type": "cluster_shut_down_scenarios"
+    }
+  ],
+  "stats": {
+    "match_threshold": 0.5,
+    "matched": 16,
+    "orphan_directories": 13,
+    "total_directories": 28,
+    "total_scenario_types": 17,
+    "unmatched_scenario_types": 1
+  }
+}
