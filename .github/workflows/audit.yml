@@ -1,0 +1,108 @@
+name: Weekly Audit
+
+# Runs every Monday morning. Performs three independent checks against
+# the current corpus and folds the results into a single, idempotent
+# GitHub issue.
+
+permissions:
+  contents: read
+  issues: write
+
+on:
+  schedule:
+    # Mondays at 06:00 UTC.
+    - cron: '0 6 * * 1'
+
+  workflow_dispatch:
+
+concurrency:
+  group: docs-sync-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # The deprecation check compares the website's TAXONOMY snapshot
+      # against the current upstream taxonomy. V1 uses krkn-hub only;
+      # future slices extend to multiple upstreams (union).
+      UPSTREAM_REPO: antedotee/krkn-hub
+
+    steps:
+      - name: Checkout website (docs-sync-test)
+        uses: actions/checkout@v4
+        with:
+          ref: docs-sync-test
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch upstream TAXONOMY.json
+        id: fetch_upstream
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/audit
+          gh api "repos/${UPSTREAM_REPO}/contents/.docs-sync-digest/TAXONOMY.json" \
+            --jq '.content' \
+            | base64 --decode > /tmp/audit/upstream-taxonomy.json
+          if [ ! -s /tmp/audit/upstream-taxonomy.json ]; then
+            echo "::warning::No upstream TAXONOMY.json found — deprecation check will be skipped."
+            rm -f /tmp/audit/upstream-taxonomy.json
+          fi
+
+      # Lychee renders the Hugo site and walks every emitted page looking
+      # for HTTP(S) links that return 4xx/5xx/timeout. We run with --offline
+      # disabled so external URLs get checked too. Set `fail: false` so a
+      # broken link doesn't fail the whole workflow — that's our audit
+      # job's signal, not a CI gate.
+      - name: Run lychee broken-link check
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        continue-on-error: true
+        with:
+          args: >-
+            --no-progress
+            --format json
+            --output /tmp/audit/lychee.json
+            --exclude-mail
+            --max-concurrency 8
+            './content/**/*.md'
+          fail: false
+
+      - name: Run audit
+        id: run_audit
+        continue-on-error: true
+        run: |
+          set +e
+          UPSTREAM_FLAG=""
+          if [ -f /tmp/audit/upstream-taxonomy.json ]; then
+            UPSTREAM_FLAG="--upstream-taxonomy /tmp/audit/upstream-taxonomy.json"
+          fi
+          LYCHEE_FLAG=""
+          if [ -f /tmp/audit/lychee.json ]; then
+            LYCHEE_FLAG="--lychee-output /tmp/audit/lychee.json"
+          fi
+          python .docs-sync/run_audit.py \
+            --repo "${{ github.repository }}" \
+            ${UPSTREAM_FLAG} \
+            ${LYCHEE_FLAG}
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Clean audit (no findings)
+        if: steps.run_audit.outputs.exit_code == '0'
+        run: echo '::notice::Weekly audit clean — no findings.'
+
+      - name: Findings posted to issue
+        if: steps.run_audit.outputs.exit_code == '1'
+        run: echo '::notice::Weekly audit found issues — see the docs-sync-audit GitHub issue.'
+
+      - name: Unrecoverable error
+        if: steps.run_audit.outputs.exit_code == '20'
+        run: |
+          echo '::error::Audit script crashed — fix before next Monday.'
+          exit 1
