@@ -1,0 +1,110 @@
+name: Docs Sync
+
+# Receives `repository_dispatch` events from upstream forks (krkn, krkn-hub,
+# krkn-ai, cerberus, krknctl) when a PR merges. Runs the orchestrator to
+# decide whether the merge requires a docs PR, then opens one if needed.
+#
+# Loop-prevention: this workflow opens PRs that target docs-sync-test (per
+# D15). Those PRs use a separate set of triggers (push to specific paths)
+# so the dispatch chain doesn't recurse.
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read
+
+on:
+  repository_dispatch:
+    types: [docs-sync]
+
+  # Allow manual trigger for testing — payload schema matches dispatch
+  workflow_dispatch:
+    inputs:
+      upstream_repo:
+        description: 'Upstream repo (e.g., antedotee/krkn-hub)'
+        required: true
+      pr_number:
+        description: 'PR number on upstream'
+        required: true
+      head_sha:
+        description: 'Head SHA of merged PR'
+        required: true
+      base_sha:
+        description: 'Base SHA the PR merged into'
+        required: true
+
+# One run per upstream-PR-sha. Cancel-in-progress is safe because the
+# pipeline is fully derived from the inputs; partial state isn't possible.
+concurrency:
+  group: >-
+    docs-sync-${{
+      github.event.client_payload.upstream_repo
+        || github.event.inputs.upstream_repo
+    }}-${{
+      github.event.client_payload.head_sha
+        || github.event.inputs.head_sha
+    }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      # Pattern 1: existing user secrets work as-is. config.py reads
+      # GEMINI_API_KEY directly when MODEL_API_KEY isn't set.
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      MODEL_API_BASE: https://generativelanguage.googleapis.com/v1beta/openai/
+      MODEL_NAME: gemini-2.5-flash
+      MAX_CONTEXT_CHARS: "200000"
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout website (docs-sync-test branch)
+        uses: actions/checkout@v4
+        with:
+          ref: docs-sync-test
+          persist-credentials: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'pyyaml>=6.0,<7.0' 'openai>=1.30' 'tenacity>=8.0'
+
+      - name: Run docs-sync orchestrator
+        id: orchestrate
+        # set +e — capture exit code for downstream conditions instead of
+        # failing the workflow on a clean Stage A/B skip.
+        continue-on-error: true
+        run: |
+          set +e
+          python .docs-sync/orchestrator.py \
+            --upstream-repo "${{ github.event.client_payload.upstream_repo || github.event.inputs.upstream_repo }}" \
+            --pr-number    "${{ github.event.client_payload.pr_number    || github.event.inputs.pr_number }}" \
+            --head-sha     "${{ github.event.client_payload.head_sha     || github.event.inputs.head_sha }}" \
+            --base-sha     "${{ github.event.client_payload.base_sha     || github.event.inputs.base_sha }}" \
+            --dry-run
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      # Slice 0c is dry-run. Real PR-opening lands in Slice 1+ (peter-evans).
+      - name: Report skip reason (Stage A)
+        if: steps.orchestrate.outputs.exit_code == '10'
+        run: echo '::notice::Stage A skipped — no doc-affecting paths.'
+
+      - name: Report skip reason (Stage B)
+        if: steps.orchestrate.outputs.exit_code == '11'
+        run: echo '::notice::Stage B skipped — upstream digest unchanged.'
+
+      - name: Report success (would open PR)
+        if: steps.orchestrate.outputs.exit_code == '0'
+        run: echo '::notice::Pipeline passed both gates. Slice 1+ will open the PR.'
+
+      - name: Fail loud on unrecoverable error
+        if: steps.orchestrate.outputs.exit_code == '20'
+        run: |
+          echo '::error::orchestrator hit an unrecoverable error.'
+          exit 1

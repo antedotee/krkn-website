@@ -1,0 +1,46 @@
+# Per-upstream relevance gate config.
+#
+# Slice 0c — currently only krkn-hub is wired up (krkn fork is on a
+# different branch; other upstreams come in slices 4-7).
+#
+# Each upstream entry specifies:
+#   doc_affecting_paths: glob patterns that COULD affect docs. Path-based
+#     gate (Stage A) lets these through to the digest-diff stage.
+#   always_skip_paths:   glob patterns that NEVER affect docs (tests, CI,
+#     deps, etc.). PRs touching only these paths exit silently.
+#   doc_target_pattern:  maps an upstream path to the docs page that
+#     covers it. Used during Stage 2 mechanical regen in Slice 1.
+
+krkn-hub:
+  # Scenario directories — each has env.sh + krknctl-input.json
+  doc_affecting_paths:
+    - "*/env.sh"
+    - "*/krknctl-input.json"
+    - "*/run.sh"
+    - "*/Dockerfile.template"
+
+  always_skip_paths:
+    - "CI/**"
+    - ".github/**"
+    - ".docs-sync/**"
+    - ".docs-sync-digest/**"
+    - "tests/**"
+    - "**/*.md"
+    - "*.md"
+    - ".gitignore"
+    - "LICENSE"
+    - "build.sh"
+    - "common_run.sh"
+    - "env.sh"           # the TOP-LEVEL env.sh (not scenario-specific)
+    - "get_docker_params.sh"
+    - "docker-compose.yaml"
+    - "config.yaml.template"
+    - "metrics_config.yaml.template"
+
+  # Maps upstream scenario dir → docs site target page.
+  # Pattern syntax: {scenario} captures the krkn-hub directory name.
+  # The corresponding website page is content/en/docs/scenarios/<slug>/_tab-krkn-hub.md
+  # where the slug is derived from {scenario} via the website's slug logic.
+  doc_target_pattern:
+    "{scenario}/env.sh": "content/en/docs/scenarios/{scenario_slug}/_tab-krkn-hub.md"
+    "{scenario}/krknctl-input.json": "content/en/docs/scenarios/{scenario_slug}/_tab-krknctl.md"
