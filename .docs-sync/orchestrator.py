@@ -35,11 +35,15 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
+from agent.draft_new_scenario import draft as draft_new_scenario_prose
+from agent.judge import judge as judge_draft, JUDGE_VERDICT_FLAGGED
 from discovery import path_gate, digest_diff, GateResult
-from extractors.krkn_hub import extract as extract_krkn_hub
+from extractors.krkn_hub import extract as extract_krkn_hub, Scenario
 from github_ops import fetch_upstream_digest, get_changed_paths
 from regen.orchestrate import apply_regen_to_modified_scenarios
+from regen.parameter_table import regenerate_table
 from security_utils import run_command_safe, sanitize_output
 
 
@@ -49,6 +53,7 @@ EXIT_NO_FILES_MODIFIED = 1     # gates passed, regen ran, but produced no diff
 EXIT_HUGO_FAILED = 2           # mechanical regen broke Hugo build
 EXIT_SKIP_STAGE_A = 10
 EXIT_SKIP_STAGE_B = 11
+EXIT_DRAFT_REJECTED = 12       # all attempts at LLM draft failed validation
 EXIT_ERROR = 20
 
 
@@ -68,6 +73,109 @@ def _emit_status(stage: str, result: GateResult) -> None:
         f" ({len(result.paths)} doc-affecting)" if result.paths else ""
     )
     print(f"[{stage}] {verdict}: {result.reason}{paths_summary}")
+
+
+def _load_taxonomy(content_root: Path) -> dict:
+    """Load TAXONOMY.json from .docs-sync-digest/. Empty dict if not found."""
+    path = content_root.parent.parent / ".docs-sync-digest" / "TAXONOMY.json"
+    if not path.is_file():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _load_voice_samples(content_root: Path, count: int = 2) -> list[str]:
+    """Pull a few existing scenario `_index.md` files for voice grounding.
+
+    Heuristic: pick larger pages (more than 1KB) since tiny ones are stubs.
+    Sorted alphabetically so output is deterministic across runs.
+    """
+    scenarios_root = content_root / "scenarios"
+    if not scenarios_root.is_dir():
+        return []
+    candidates = []
+    for d in sorted(scenarios_root.iterdir()):
+        if not d.is_dir() or d.name.startswith(("_", ".")):
+            continue
+        idx = d / "_index.md"
+        if idx.is_file() and idx.stat().st_size > 1024:
+            candidates.append(idx.read_text(encoding="utf-8"))
+        if len(candidates) >= count:
+            break
+    return candidates
+
+
+def _scenario_to_dir_name(name: str) -> str:
+    """Convert a krkn-hub scenario name (`pod-scenarios`) to a website dir
+    name (`pod-scenarios`). For now identity — we trust upstream naming.
+    Future slices may add a normalization step if needed."""
+    return name
+
+
+def _draft_added_scenarios(
+    scenarios: list[Scenario],
+    content_root: Path,
+) -> list[Path] | None:
+    """For each added scenario, draft an `_index.md` body via LLM, validate,
+    judge, and (if all checks pass) write the file.
+
+    Returns the list of files written, or None if ANY draft failed
+    irrecoverably — the orchestrator treats `None` as a fatal error and
+    aborts WITHOUT opening a partial PR.
+    """
+    taxonomy = _load_taxonomy(content_root)
+    voice_samples = _load_voice_samples(content_root)
+
+    written: list[Path] = []
+    for scenario in scenarios:
+        print(f"[Stage 1.5] drafting prose for added scenario: {scenario.name}")
+        result = draft_new_scenario_prose(
+            scenario=scenario,
+            taxonomy=taxonomy,
+            voice_samples=voice_samples,
+            max_attempts=2,
+        )
+        if not result.accepted:
+            print(
+                f"[Stage 1.5] REJECTED draft for {scenario.name}: "
+                + ", ".join(f"{r.code}({r.message})" for r in result.rejections),
+                file=sys.stderr,
+            )
+            return None  # abort the whole run — don't ship partial output
+
+        # Run the judge on the accepted draft for an independent check.
+        verdict = judge_draft(scenario, result.body, taxonomy)
+        print(f"[Stage 1.5] judge verdict for {scenario.name}: "
+              f"{verdict.verdict} — {verdict.reasoning}")
+        if verdict.verdict == JUDGE_VERDICT_FLAGGED:
+            print(
+                f"[Stage 1.5] judge flagged {scenario.name}; "
+                f"phrases: {verdict.flagged_phrases}",
+                file=sys.stderr,
+            )
+            # We DON'T abort — flagged drafts get the `judge-flagged` label
+            # on the PR (workflow YAML wires this) so a human can review.
+
+        # Write the file. Frontmatter is minimal — Hugo derives the page
+        # title from `title:`. We pick a Title-Case form of the name.
+        title = " ".join(w.capitalize() for w in scenario.name.split("-"))
+        target_dir = content_root / "scenarios" / _scenario_to_dir_name(scenario.name)
+        target_dir.mkdir(parents=True, exist_ok=True)
+        index_md = target_dir / "_index.md"
+
+        frontmatter = (
+            "---\n"
+            f"title: {title}\n"
+            "description:\n"
+            "weight: 99\n"  # new scenarios sort to end; maintainer sets weight
+            "---\n\n"
+        )
+        index_md.write_text(frontmatter + result.body.rstrip() + "\n", encoding="utf-8")
+        written.append(index_md)
+
+    return written
 
 
 def run_pipeline(
@@ -148,8 +256,21 @@ def run_pipeline(
               "deferred to Slice 2 (deprecation prose): "
               f"{', '.join(s.name for s in change_set.scenarios_removed)}")
 
-    if not change_set.scenarios_modified:
-        print("[Stage 1] no modified scenarios — Slice 1 has nothing to do.")
+    # --- Stage 1.5: Draft prose for ADDED scenarios (Slice 2) ----------
+    # Skip if no added scenarios; otherwise route each through Gemini Flash
+    # → validation → judge → write `_index.md` if accepted.
+    drafted_files: list[Path] = []
+    if change_set.scenarios_added:
+        drafted_files = _draft_added_scenarios(
+            scenarios=change_set.scenarios_added,
+            content_root=Path("content/en/docs"),
+        )
+        if drafted_files is None:
+            return EXIT_DRAFT_REJECTED  # all draft attempts failed validation
+        print(f"[Stage 1.5] drafted {len(drafted_files)} new scenario page(s).")
+
+    if not change_set.scenarios_modified and not drafted_files:
+        print("[Stage 1] no modified or added scenarios — nothing to do.")
         return EXIT_NO_FILES_MODIFIED
 
     # --- Stage 2: Mechanical regen -------------------------------------
