@@ -40,6 +40,7 @@ from typing import Optional
 from agent.draft_new_scenario import draft as draft_new_scenario_prose
 from agent.judge import judge as judge_draft, JUDGE_VERDICT_FLAGGED
 from discovery import path_gate, digest_diff, GateResult
+from extractors.krkn_ai import extract as extract_krkn_ai
 from extractors.krkn_hub import extract as extract_krkn_hub, Scenario
 from github_ops import fetch_upstream_digest, get_changed_paths
 from regen.orchestrate import apply_regen_to_modified_scenarios
@@ -84,13 +85,26 @@ EXIT_ERROR = 20
 # (after repo-map.yaml entry + build_upstream_digest.py on the fork).
 _EXTRACTORS = {
     "krkn-hub": extract_krkn_hub,
+    "krkn-ai": extract_krkn_ai,
 }
 
 # Upstreams registered in repo-map.yaml but whose extractor is still TODO.
 # Dispatches from these exit cleanly with EXIT_EXTRACTOR_DEFERRED instead
 # of EXIT_ERROR — the path gate matters even when we can't yet sync, so
 # we don't want noisy workflow failures during the rollout window.
-_DEFERRED_UPSTREAMS = frozenset({"krkn-ai", "cerberus", "krknctl", "krkn"})
+_DEFERRED_UPSTREAMS = frozenset({"cerberus", "krknctl", "krkn"})
+
+# Upstreams whose docs live under `content/en/docs/scenarios/<slug>/` with
+# the `_tab-krkn-hub.md` / `_tab-krknctl.md` split. Only these are eligible
+# for Stage 1.5 (LLM prose drafting for added scenarios) and Stage 2
+# (mechanical table regen for modified scenarios) — both stages have
+# krkn-hub-specific assumptions baked into their target-directory logic.
+#
+# For other upstreams (krkn-ai, etc.), the orchestrator still extracts a
+# ChangeSet, writes STATE.md/REFLECTION.md (observability + harvest signal),
+# and exits with EXIT_NO_FILES_MODIFIED. Generalizing prose/regen to those
+# upstreams' doc layouts is a separate slice — see tasks/todo.md.
+_KRKN_HUB_STYLE_UPSTREAMS = frozenset({"krkn-hub"})
 
 
 def _emit_status(stage: str, result: GateResult) -> None:
@@ -377,10 +391,12 @@ def run_pipeline(
               f"{', '.join(s.name for s in change_set.scenarios_removed)}")
 
     # --- Stage 1.5: Draft prose for ADDED scenarios (Slice 2) ----------
-    # Skip if no added scenarios; otherwise route each through Gemini Flash
-    # → validation → judge → write `_index.md` if accepted.
+    # Only krkn-hub-style upstreams get prose drafting — Stage 1.5's target
+    # directory logic assumes the `content/en/docs/scenarios/<slug>/` layout.
+    # For other upstreams (krkn-ai), the ChangeSet still gets extracted
+    # (visible in STATE.md / REFLECTION.md) but no auto-draft fires.
     drafted_files: list[Path] = []
-    if change_set.scenarios_added:
+    if change_set.scenarios_added and upstream_short in _KRKN_HUB_STYLE_UPSTREAMS:
         drafted_files = _draft_added_scenarios(
             scenarios=change_set.scenarios_added,
             content_root=Path("content/en/docs"),
@@ -394,6 +410,11 @@ def run_pipeline(
             save_reflection(reflection, _REFLECTION_MD_PATH)
             return EXIT_DRAFT_REJECTED  # all draft attempts failed validation
         print(f"[Stage 1.5] drafted {len(drafted_files)} new scenario page(s).")
+    elif change_set.scenarios_added:
+        print(f"[Stage 1.5] {len(change_set.scenarios_added)} added entity(ies) "
+              f"detected for {upstream_short!r}, but Stage 1.5 prose drafting "
+              f"is only wired for krkn-hub-style upstreams. ChangeSet recorded "
+              f"in STATE.md for human review.")
 
     if not change_set.scenarios_modified and not drafted_files:
         print("[Stage 1] no modified or added scenarios — nothing to do.")
@@ -410,10 +431,18 @@ def run_pipeline(
               file=sys.stderr)
         return EXIT_ERROR
 
-    modified_files = apply_regen_to_modified_scenarios(
-        change_set=change_set,
-        content_root=content_root,
-    )
+    if upstream_short in _KRKN_HUB_STYLE_UPSTREAMS:
+        modified_files = apply_regen_to_modified_scenarios(
+            change_set=change_set,
+            content_root=content_root,
+        )
+    else:
+        # Non-krkn-hub upstreams don't yet have an AUTO-markered regen target;
+        # the ChangeSet is still recorded in STATE.md/REFLECTION.md so humans
+        # see what changed and the harvest loop has signal.
+        print(f"[Stage 2] mechanical regen only wired for krkn-hub-style "
+              f"upstreams. {upstream_short!r} change recorded; no auto-edit.")
+        modified_files = []
     print(f"[Stage 2] regen wrote {len(modified_files)} file(s).")
     for f in modified_files:
         print(f"  modified: {f}")
