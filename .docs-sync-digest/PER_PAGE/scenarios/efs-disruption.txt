@@ -1,0 +1,5 @@
+This scenario creates an outgoing firewall rule on specific nodes in your cluster, chosen by node name or a selector. This rule blocks connections to AWS EFS, leading to a temporary failure of any EFS volumes mounted on those affected nodes.
+
+## How to Run EFS Disruption Scenarios
+
+Choose your preferred method to run EFS disruption scenarios:

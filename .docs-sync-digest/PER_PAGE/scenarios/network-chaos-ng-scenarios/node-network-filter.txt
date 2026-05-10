@@ -1,0 +1,5 @@
+Creates iptables rules on one or more nodes to block incoming and outgoing traffic on a port in the node network interface. Can be used to block network based services connected to the node or to block inter-node communication.
+
+## How to Run Node Network Filter Scenarios
+
+Choose your preferred method to run node network filter scenarios:

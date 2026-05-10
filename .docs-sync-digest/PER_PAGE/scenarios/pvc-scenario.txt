@@ -1,0 +1,5 @@
+Scenario to fill up a given PersistenVolumeClaim by creating a temp file on the PVC from a pod associated with it. The purpose of this scenario is to fill up a volume to understand faults caused by the application using this volume.
+
+## How to Run PVC Scenarios
+
+Choose your preferred method to run PVC scenarios:

@@ -1,0 +1,5 @@
+Brings one or more network interfaces down on a target node for a configurable duration, then restores them. Can be used to simulate network partitions, NIC failures, or loss of connectivity at the node level.
+
+## How to Run Node Interface Down Scenarios
+
+Choose your preferred method to run node interface down scenarios:

@@ -1,0 +1,5 @@
+This scenario blocks all outgoing DNS traffic from a specific pod, effectively preventing it from resolving any hostnames or service names.
+
+## How to Run DNS Outage Scenarios
+
+Choose your preferred method to run DNS outage scenarios:

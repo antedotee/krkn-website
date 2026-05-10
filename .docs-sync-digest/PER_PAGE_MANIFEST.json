@@ -1,0 +1,738 @@
+{
+  "_root": {
+    "char_count": 14476,
+    "source_path": "_index.md"
+  },
+  "cerberus": {
+    "char_count": 8251,
+    "source_path": "cerberus/_index.md"
+  },
+  "cerberus/alerts": {
+    "char_count": 924,
+    "source_path": "cerberus/alerts.md"
+  },
+  "cerberus/config": {
+    "char_count": 8977,
+    "source_path": "cerberus/config.md"
+  },
+  "cerberus/contribute": {
+    "char_count": 1657,
+    "source_path": "cerberus/contribute.md"
+  },
+  "cerberus/example_report": {
+    "char_count": 3141,
+    "source_path": "cerberus/example_report.md"
+  },
+  "cerberus/installation": {
+    "char_count": 3893,
+    "source_path": "cerberus/installation.md"
+  },
+  "cerberus/node-problem-detector": {
+    "char_count": 1793,
+    "source_path": "cerberus/node-problem-detector.md"
+  },
+  "cerberus/slack": {
+    "char_count": 2484,
+    "source_path": "cerberus/slack.md"
+  },
+  "cerberus/usage": {
+    "char_count": 5795,
+    "source_path": "cerberus/usage.md"
+  },
+  "chaos-recommender": {
+    "char_count": 6349,
+    "source_path": "chaos-recommender.md"
+  },
+  "chaos-testing-guide": {
+    "char_count": 24407,
+    "source_path": "chaos-testing-guide/_index.md"
+  },
+  "contribution-guidelines": {
+    "char_count": 3807,
+    "source_path": "contribution-guidelines/_index.md"
+  },
+  "contribution-guidelines/git-pointers": {
+    "char_count": 2456,
+    "source_path": "contribution-guidelines/git-pointers.md"
+  },
+  "contribution-guidelines/pre-commit": {
+    "char_count": 526,
+    "source_path": "contribution-guidelines/pre-commit.md"
+  },
+  "debugging": {
+    "char_count": 1275,
+    "source_path": "debugging.md"
+  },
+  "developers-guide": {
+    "char_count": 1388,
+    "source_path": "developers-guide/_index.md"
+  },
+  "developers-guide/add-tests-krkn": {
+    "char_count": 12597,
+    "source_path": "developers-guide/add-tests-krkn.md"
+  },
+  "developers-guide/editing-krkn-hub": {
+    "char_count": 2250,
+    "source_path": "developers-guide/editing-krkn-hub.md"
+  },
+  "developers-guide/krkn-lib": {
+    "char_count": 2027,
+    "source_path": "developers-guide/krkn-lib.md"
+  },
+  "developers-guide/krknctl-edits": {
+    "char_count": 2822,
+    "source_path": "developers-guide/krknctl-edits.md"
+  },
+  "developers-guide/scenario_plugin_api": {
+    "char_count": 7754,
+    "source_path": "developers-guide/scenario_plugin_api.md"
+  },
+  "developers-guide/testing-changes": {
+    "char_count": 11869,
+    "source_path": "developers-guide/testing-changes.md"
+  },
+  "getting-started": {
+    "char_count": 6184,
+    "source_path": "getting-started/_index.md"
+  },
+  "getting-started/getting-started-krkn": {
+    "char_count": 3770,
+    "source_path": "getting-started/getting-started-krkn.md"
+  },
+  "getting-started/user-journeys/long-term-storage": {
+    "char_count": 2666,
+    "source_path": "getting-started/user-journeys/long-term-storage.md"
+  },
+  "getting-started/user-journeys/metrics-validation": {
+    "char_count": 1966,
+    "source_path": "getting-started/user-journeys/metrics-validation.md"
+  },
+  "getting-started/user-journeys/multi-cluster": {
+    "char_count": 3725,
+    "source_path": "getting-started/user-journeys/multi-cluster.md"
+  },
+  "getting-started/user-journeys/resilience-score": {
+    "char_count": 3334,
+    "source_path": "getting-started/user-journeys/resilience-score.md"
+  },
+  "installation": {
+    "char_count": 4648,
+    "source_path": "installation/_index.md"
+  },
+  "installation/disconnected-env": {
+    "char_count": 4765,
+    "source_path": "installation/disconnected-env.md"
+  },
+  "installation/krkn": {
+    "char_count": 2613,
+    "source_path": "installation/krkn.md"
+  },
+  "installation/krkn-ai": {
+    "char_count": 1824,
+    "source_path": "installation/krkn-ai.md"
+  },
+  "installation/krkn-dashboard": {
+    "char_count": 4330,
+    "source_path": "installation/krkn-dashboard.md"
+  },
+  "installation/krkn-hub": {
+    "char_count": 2014,
+    "source_path": "installation/krkn-hub.md"
+  },
+  "installation/krknctl": {
+    "char_count": 3408,
+    "source_path": "installation/krknctl.md"
+  },
+  "krkn": {
+    "char_count": 7432,
+    "source_path": "krkn/_index.md"
+  },
+  "krkn-hub": {
+    "char_count": 458,
+    "source_path": "krkn-hub.md"
+  },
+  "krkn-operator": {
+    "char_count": 2808,
+    "source_path": "krkn-operator/_index.md"
+  },
+  "krkn-operator/configuration": {
+    "char_count": 23290,
+    "source_path": "krkn-operator/configuration/_index.md"
+  },
+  "krkn-operator/installation": {
+    "char_count": 14585,
+    "source_path": "krkn-operator/installation/_index.md"
+  },
+  "krkn-operator/usage": {
+    "char_count": 10367,
+    "source_path": "krkn-operator/usage/_index.md"
+  },
+  "krkn-visualize": {
+    "char_count": 8090,
+    "source_path": "krkn-visualize.md"
+  },
+  "krkn/SLOs_validation": {
+    "char_count": 4275,
+    "source_path": "krkn/SLOs_validation.md"
+  },
+  "krkn/config": {
+    "char_count": 24096,
+    "source_path": "krkn/config.md"
+  },
+  "krkn/health-checks": {
+    "char_count": 2819,
+    "source_path": "krkn/health-checks.md"
+  },
+  "krkn/krkn-roadmap": {
+    "char_count": 0,
+    "source_path": "krkn/krkn-roadmap.md"
+  },
+  "krkn/rbac": {
+    "char_count": 5243,
+    "source_path": "krkn/rbac.md"
+  },
+  "krkn/resiliency-score": {
+    "char_count": 13688,
+    "source_path": "krkn/resiliency-score.md"
+  },
+  "krkn/signal": {
+    "char_count": 2014,
+    "source_path": "krkn/signal.md"
+  },
+  "krkn/telemetry": {
+    "char_count": 7951,
+    "source_path": "krkn/telemetry.md"
+  },
+  "krkn/virt-checks": {
+    "char_count": 7084,
+    "source_path": "krkn/virt-checks.md"
+  },
+  "krkn_ai": {
+    "char_count": 1199,
+    "source_path": "krkn_ai/_index.md"
+  },
+  "krkn_ai/config": {
+    "char_count": 305,
+    "source_path": "krkn_ai/config/_index.md"
+  },
+  "krkn_ai/config/elastic_search": {
+    "char_count": 2257,
+    "source_path": "krkn_ai/config/elastic_search.md"
+  },
+  "krkn_ai/config/evolutionary_algorithm": {
+    "char_count": 5104,
+    "source_path": "krkn_ai/config/evolutionary_algorithm.md"
+  },
+  "krkn_ai/config/fitness_function": {
+    "char_count": 6491,
+    "source_path": "krkn_ai/config/fitness_function.md"
+  },
+  "krkn_ai/config/health_check": {
+    "char_count": 2471,
+    "source_path": "krkn_ai/config/health_check.md"
+  },
+  "krkn_ai/config/output": {
+    "char_count": 1645,
+    "source_path": "krkn_ai/config/output.md"
+  },
+  "krkn_ai/config/scenarios": {
+    "char_count": 1979,
+    "source_path": "krkn_ai/config/scenarios.md"
+  },
+  "krkn_ai/config/stopping_criteria": {
+    "char_count": 2231,
+    "source_path": "krkn_ai/config/stopping_criteria.md"
+  },
+  "krkn_ai/container": {
+    "char_count": 3906,
+    "source_path": "krkn_ai/container.md"
+  },
+  "krkn_ai/discover": {
+    "char_count": 4085,
+    "source_path": "krkn_ai/discover.md"
+  },
+  "krkn_ai/getting-started-krkn-ai": {
+    "char_count": 4747,
+    "source_path": "krkn_ai/getting-started-krkn-ai.md"
+  },
+  "krkn_ai/run": {
+    "char_count": 1600,
+    "source_path": "krkn_ai/run.md"
+  },
+  "krkn_dashboard": {
+    "char_count": 2736,
+    "source_path": "krkn_dashboard/_index.md"
+  },
+  "krkn_dashboard/grafana-elasticsearch": {
+    "char_count": 1181,
+    "source_path": "krkn_dashboard/grafana-elasticsearch.md"
+  },
+  "krkn_dashboard/using-the-ui": {
+    "char_count": 1910,
+    "source_path": "krkn_dashboard/using-the-ui.md"
+  },
+  "krknctl": {
+    "char_count": 541,
+    "source_path": "krknctl/_index.md"
+  },
+  "krknctl/randomized-chaos-testing": {
+    "char_count": 4827,
+    "source_path": "krknctl/randomized-chaos-testing.md"
+  },
+  "krknctl/usage": {
+    "char_count": 15720,
+    "source_path": "krknctl/usage.md"
+  },
+  "managedcluster_scenarios": {
+    "char_count": 2934,
+    "source_path": "managedcluster_scenarios.md"
+  },
+  "overview": {
+    "char_count": 4448,
+    "source_path": "overview/_index.md"
+  },
+  "rollback-scenarios": {
+    "char_count": 12659,
+    "source_path": "rollback-scenarios/_index.md"
+  },
+  "scenarios": {
+    "char_count": 12554,
+    "source_path": "scenarios/_index.md"
+  },
+  "scenarios/all-scenario-env": {
+    "char_count": 7028,
+    "source_path": "scenarios/all-scenario-env.md"
+  },
+  "scenarios/all-scenario-env-krknctl": {
+    "char_count": 9476,
+    "source_path": "scenarios/all-scenario-env-krknctl.md"
+  },
+  "scenarios/application-outage": {
+    "char_count": 1393,
+    "source_path": "scenarios/application-outage/_index.md"
+  },
+  "scenarios/application-outage--tab-krkn": {
+    "char_count": 2168,
+    "source_path": "scenarios/application-outage/_tab-krkn.md"
+  },
+  "scenarios/application-outage--tab-krkn-hub": {
+    "char_count": 4662,
+    "source_path": "scenarios/application-outage/_tab-krkn-hub.md"
+  },
+  "scenarios/application-outage--tab-krknctl": {
+    "char_count": 1412,
+    "source_path": "scenarios/application-outage/_tab-krknctl.md"
+  },
+  "scenarios/aurora-disruption": {
+    "char_count": 415,
+    "source_path": "scenarios/aurora-disruption/_index.md"
+  },
+  "scenarios/aurora-disruption--tab-krkn": {
+    "char_count": 2000,
+    "source_path": "scenarios/aurora-disruption/_tab-krkn.md"
+  },
+  "scenarios/aurora-disruption--tab-krkn-hub": {
+    "char_count": 588,
+    "source_path": "scenarios/aurora-disruption/_tab-krkn-hub.md"
+  },
+  "scenarios/aurora-disruption--tab-krknctl": {
+    "char_count": 290,
+    "source_path": "scenarios/aurora-disruption/_tab-krknctl.md"
+  },
+  "scenarios/cloud_setup": {
+    "char_count": 5969,
+    "source_path": "scenarios/cloud_setup.md"
+  },
+  "scenarios/container-scenario": {
+    "char_count": 2181,
+    "source_path": "scenarios/container-scenario/_index.md"
+  },
+  "scenarios/container-scenario--tab-krkn": {
+    "char_count": 2515,
+    "source_path": "scenarios/container-scenario/_tab-krkn.md"
+  },
+  "scenarios/container-scenario--tab-krkn-hub": {
+    "char_count": 4683,
+    "source_path": "scenarios/container-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/container-scenario--tab-krknctl": {
+    "char_count": 1339,
+    "source_path": "scenarios/container-scenario/_tab-krknctl.md"
+  },
+  "scenarios/dns-outage": {
+    "char_count": 234,
+    "source_path": "scenarios/dns-outage/_index.md"
+  },
+  "scenarios/dns-outage--tab-krkn": {
+    "char_count": 1760,
+    "source_path": "scenarios/dns-outage/_tab-krkn.md"
+  },
+  "scenarios/dns-outage--tab-krkn-hub": {
+    "char_count": 245,
+    "source_path": "scenarios/dns-outage/_tab-krkn-hub.md"
+  },
+  "scenarios/dns-outage--tab-krknctl": {
+    "char_count": 163,
+    "source_path": "scenarios/dns-outage/_tab-krknctl.md"
+  },
+  "scenarios/efs-disruption": {
+    "char_count": 344,
+    "source_path": "scenarios/efs-disruption/_index.md"
+  },
+  "scenarios/efs-disruption--tab-krkn": {
+    "char_count": 2025,
+    "source_path": "scenarios/efs-disruption/_tab-krkn.md"
+  },
+  "scenarios/efs-disruption--tab-krkn-hub": {
+    "char_count": 590,
+    "source_path": "scenarios/efs-disruption/_tab-krkn-hub.md"
+  },
+  "scenarios/efs-disruption--tab-krknctl": {
+    "char_count": 175,
+    "source_path": "scenarios/efs-disruption/_tab-krknctl.md"
+  },
+  "scenarios/etcd-split-brain": {
+    "char_count": 828,
+    "source_path": "scenarios/etcd-split-brain/_index.md"
+  },
+  "scenarios/etcd-split-brain--tab-krkn": {
+    "char_count": 2521,
+    "source_path": "scenarios/etcd-split-brain/_tab-krkn.md"
+  },
+  "scenarios/etcd-split-brain--tab-krkn-hub": {
+    "char_count": 246,
+    "source_path": "scenarios/etcd-split-brain/_tab-krkn-hub.md"
+  },
+  "scenarios/etcd-split-brain--tab-krknctl": {
+    "char_count": 169,
+    "source_path": "scenarios/etcd-split-brain/_tab-krknctl.md"
+  },
+  "scenarios/hog-scenarios": {
+    "char_count": 2481,
+    "source_path": "scenarios/hog-scenarios/_index.md"
+  },
+  "scenarios/hog-scenarios/cpu-hog-scenario": {
+    "char_count": 1726,
+    "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_index.md"
+  },
+  "scenarios/hog-scenarios/cpu-hog-scenario--tab-krkn": {
+    "char_count": 2065,
+    "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_tab-krkn.md"
+  },
+  "scenarios/hog-scenarios/cpu-hog-scenario--tab-krkn-hub": {
+    "char_count": 5001,
+    "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/hog-scenarios/cpu-hog-scenario--tab-krknctl": {
+    "char_count": 1437,
+    "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_tab-krknctl.md"
+  },
+  "scenarios/hog-scenarios/io-hog-scenario": {
+    "char_count": 2548,
+    "source_path": "scenarios/hog-scenarios/io-hog-scenario/_index.md"
+  },
+  "scenarios/hog-scenarios/io-hog-scenario--tab-krkn": {
+    "char_count": 3299,
+    "source_path": "scenarios/hog-scenarios/io-hog-scenario/_tab-krkn.md"
+  },
+  "scenarios/hog-scenarios/io-hog-scenario--tab-krkn-hub": {
+    "char_count": 5184,
+    "source_path": "scenarios/hog-scenarios/io-hog-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/hog-scenarios/io-hog-scenario--tab-krknctl": {
+    "char_count": 1898,
+    "source_path": "scenarios/hog-scenarios/io-hog-scenario/_tab-krknctl.md"
+  },
+  "scenarios/hog-scenarios/memory-hog-scenario": {
+    "char_count": 2189,
+    "source_path": "scenarios/hog-scenarios/memory-hog-scenario/_index.md"
+  },
+  "scenarios/hog-scenarios/memory-hog-scenario--tab-krkn": {
+    "char_count": 2119,
+    "source_path": "scenarios/hog-scenarios/memory-hog-scenario/_tab-krkn.md"
+  },
+  "scenarios/hog-scenarios/memory-hog-scenario--tab-krkn-hub": {
+    "char_count": 5127,
+    "source_path": "scenarios/hog-scenarios/memory-hog-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/hog-scenarios/memory-hog-scenario--tab-krknctl": {
+    "char_count": 1529,
+    "source_path": "scenarios/hog-scenarios/memory-hog-scenario/_tab-krknctl.md"
+  },
+  "scenarios/http-load-scenario": {
+    "char_count": 1017,
+    "source_path": "scenarios/http-load-scenario/_index.md"
+  },
+  "scenarios/http-load-scenario--tab-krkn": {
+    "char_count": 3706,
+    "source_path": "scenarios/http-load-scenario/_tab-krkn.md"
+  },
+  "scenarios/http-load-scenario--tab-krkn-hub": {
+    "char_count": 4960,
+    "source_path": "scenarios/http-load-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/http-load-scenario--tab-krknctl": {
+    "char_count": 1970,
+    "source_path": "scenarios/http-load-scenario/_tab-krknctl.md"
+  },
+  "scenarios/kubevirt-vm-outage-scenario": {
+    "char_count": 5836,
+    "source_path": "scenarios/kubevirt-vm-outage-scenario/_index.md"
+  },
+  "scenarios/kubevirt-vm-outage-scenario--tab-krkn": {
+    "char_count": 4342,
+    "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krkn.md"
+  },
+  "scenarios/kubevirt-vm-outage-scenario--tab-krkn-hub": {
+    "char_count": 4109,
+    "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/kubevirt-vm-outage-scenario--tab-krknctl": {
+    "char_count": 1089,
+    "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krknctl.md"
+  },
+  "scenarios/managed-cluster-scenario/managed-cluster-scenario": {
+    "char_count": 2908,
+    "source_path": "scenarios/managed-cluster-scenario/managed-cluster-scenario.md"
+  },
+  "scenarios/network-chaos-ng-scenarios": {
+    "char_count": 471,
+    "source_path": "scenarios/network-chaos-ng-scenarios/_index.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/network-chaos-ng-scenario-api": {
+    "char_count": 2134,
+    "source_path": "scenarios/network-chaos-ng-scenarios/network-chaos-ng-scenario-api.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-interface-down": {
+    "char_count": 322,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-interface-down/_index.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-interface-down--tab-krkn": {
+    "char_count": 2275,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-interface-down/_tab-krkn.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-interface-down--tab-krkn-hub": {
+    "char_count": 4113,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-interface-down/_tab-krkn-hub.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-interface-down--tab-krknctl": {
+    "char_count": 2516,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-interface-down/_tab-krknctl.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-network-filter": {
+    "char_count": 340,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-network-filter/_index.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-network-filter--tab-krkn": {
+    "char_count": 2942,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-network-filter/_tab-krkn.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-network-filter--tab-krkn-hub": {
+    "char_count": 4551,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-network-filter/_tab-krkn-hub.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/node-network-filter--tab-krknctl": {
+    "char_count": 5465,
+    "source_path": "scenarios/network-chaos-ng-scenarios/node-network-filter/_tab-krknctl.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/pod-network-filter": {
+    "char_count": 334,
+    "source_path": "scenarios/network-chaos-ng-scenarios/pod-network-filter/_index.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/pod-network-filter--tab-krkn": {
+    "char_count": 2683,
+    "source_path": "scenarios/network-chaos-ng-scenarios/pod-network-filter/_tab-krkn.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/pod-network-filter--tab-krkn-hub": {
+    "char_count": 5608,
+    "source_path": "scenarios/network-chaos-ng-scenarios/pod-network-filter/_tab-krkn-hub.md"
+  },
+  "scenarios/network-chaos-ng-scenarios/pod-network-filter--tab-krknctl": {
+    "char_count": 4262,
+    "source_path": "scenarios/network-chaos-ng-scenarios/pod-network-filter/_tab-krknctl.md"
+  },
+  "scenarios/network-chaos-scenario": {
+    "char_count": 310,
+    "source_path": "scenarios/network-chaos-scenario/_index.md"
+  },
+  "scenarios/network-chaos-scenario--tab-krkn": {
+    "char_count": 4806,
+    "source_path": "scenarios/network-chaos-scenario/_tab-krkn.md"
+  },
+  "scenarios/network-chaos-scenario--tab-krkn-hub": {
+    "char_count": 6586,
+    "source_path": "scenarios/network-chaos-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/network-chaos-scenario--tab-krknctl": {
+    "char_count": 2702,
+    "source_path": "scenarios/network-chaos-scenario/_tab-krknctl.md"
+  },
+  "scenarios/node-scenarios": {
+    "char_count": 4966,
+    "source_path": "scenarios/node-scenarios/_index.md"
+  },
+  "scenarios/node-scenarios--tab-krkn": {
+    "char_count": 8064,
+    "source_path": "scenarios/node-scenarios/_tab-krkn.md"
+  },
+  "scenarios/node-scenarios--tab-krkn-hub": {
+    "char_count": 7336,
+    "source_path": "scenarios/node-scenarios/_tab-krkn-hub.md"
+  },
+  "scenarios/node-scenarios--tab-krknctl": {
+    "char_count": 3830,
+    "source_path": "scenarios/node-scenarios/_tab-krknctl.md"
+  },
+  "scenarios/node-scenarios/node-scenarios-bm-krkn-hub": {
+    "char_count": 3224,
+    "source_path": "scenarios/node-scenarios/node-scenarios-bm-krkn-hub.md"
+  },
+  "scenarios/pod-network-scenario": {
+    "char_count": 3027,
+    "source_path": "scenarios/pod-network-scenario/_index.md"
+  },
+  "scenarios/pod-network-scenario--tab-krkn": {
+    "char_count": 3860,
+    "source_path": "scenarios/pod-network-scenario/_tab-krkn.md"
+  },
+  "scenarios/pod-network-scenario--tab-krkn-hub": {
+    "char_count": 5273,
+    "source_path": "scenarios/pod-network-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/pod-network-scenario--tab-krknctl": {
+    "char_count": 1945,
+    "source_path": "scenarios/pod-network-scenario/_tab-krknctl.md"
+  },
+  "scenarios/pod-scenario": {
+    "char_count": 8249,
+    "source_path": "scenarios/pod-scenario/_index.md"
+  },
+  "scenarios/pod-scenario--tab-krkn": {
+    "char_count": 3747,
+    "source_path": "scenarios/pod-scenario/_tab-krkn.md"
+  },
+  "scenarios/pod-scenario--tab-krkn-hub": {
+    "char_count": 5285,
+    "source_path": "scenarios/pod-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/pod-scenario--tab-krknctl": {
+    "char_count": 1593,
+    "source_path": "scenarios/pod-scenario/_tab-krknctl.md"
+  },
+  "scenarios/power-outage-scenarios": {
+    "char_count": 500,
+    "source_path": "scenarios/power-outage-scenarios/_index.md"
+  },
+  "scenarios/power-outage-scenarios--tab-krkn": {
+    "char_count": 2573,
+    "source_path": "scenarios/power-outage-scenarios/_tab-krkn.md"
+  },
+  "scenarios/power-outage-scenarios--tab-krkn-hub": {
+    "char_count": 5141,
+    "source_path": "scenarios/power-outage-scenarios/_tab-krkn-hub.md"
+  },
+  "scenarios/power-outage-scenarios--tab-krknctl": {
+    "char_count": 1996,
+    "source_path": "scenarios/power-outage-scenarios/_tab-krknctl.md"
+  },
+  "scenarios/pvc-scenario": {
+    "char_count": 313,
+    "source_path": "scenarios/pvc-scenario/_index.md"
+  },
+  "scenarios/pvc-scenario--tab-krkn": {
+    "char_count": 2461,
+    "source_path": "scenarios/pvc-scenario/_tab-krkn.md"
+  },
+  "scenarios/pvc-scenario--tab-krkn-hub": {
+    "char_count": 4987,
+    "source_path": "scenarios/pvc-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/pvc-scenario--tab-krknctl": {
+    "char_count": 1377,
+    "source_path": "scenarios/pvc-scenario/_tab-krknctl.md"
+  },
+  "scenarios/service-disruption-scenarios": {
+    "char_count": 376,
+    "source_path": "scenarios/service-disruption-scenarios/_index.md"
+  },
+  "scenarios/service-disruption-scenarios--tab-krkn": {
+    "char_count": 2903,
+    "source_path": "scenarios/service-disruption-scenarios/_tab-krkn.md"
+  },
+  "scenarios/service-disruption-scenarios--tab-krkn-hub": {
+    "char_count": 4553,
+    "source_path": "scenarios/service-disruption-scenarios/_tab-krkn-hub.md"
+  },
+  "scenarios/service-disruption-scenarios--tab-krknctl": {
+    "char_count": 1182,
+    "source_path": "scenarios/service-disruption-scenarios/_tab-krknctl.md"
+  },
+  "scenarios/service-hijacking-scenario": {
+    "char_count": 2604,
+    "source_path": "scenarios/service-hijacking-scenario/_index.md"
+  },
+  "scenarios/service-hijacking-scenario--tab-krkn": {
+    "char_count": 3503,
+    "source_path": "scenarios/service-hijacking-scenario/_tab-krkn.md"
+  },
+  "scenarios/service-hijacking-scenario--tab-krkn-hub": {
+    "char_count": 5310,
+    "source_path": "scenarios/service-hijacking-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/service-hijacking-scenario--tab-krknctl": {
+    "char_count": 946,
+    "source_path": "scenarios/service-hijacking-scenario/_tab-krknctl.md"
+  },
+  "scenarios/syn-flood-scenario": {
+    "char_count": 902,
+    "source_path": "scenarios/syn-flood-scenario/_index.md"
+  },
+  "scenarios/syn-flood-scenario--tab-krkn": {
+    "char_count": 2468,
+    "source_path": "scenarios/syn-flood-scenario/_tab-krkn.md"
+  },
+  "scenarios/syn-flood-scenario--tab-krkn-hub": {
+    "char_count": 5455,
+    "source_path": "scenarios/syn-flood-scenario/_tab-krkn-hub.md"
+  },
+  "scenarios/syn-flood-scenario--tab-krknctl": {
+    "char_count": 1851,
+    "source_path": "scenarios/syn-flood-scenario/_tab-krknctl.md"
+  },
+  "scenarios/time-scenarios": {
+    "char_count": 445,
+    "source_path": "scenarios/time-scenarios/_index.md"
+  },
+  "scenarios/time-scenarios--tab-krkn": {
+    "char_count": 2280,
+    "source_path": "scenarios/time-scenarios/_tab-krkn.md"
+  },
+  "scenarios/time-scenarios--tab-krkn-hub": {
+    "char_count": 4571,
+    "source_path": "scenarios/time-scenarios/_tab-krkn-hub.md"
+  },
+  "scenarios/time-scenarios--tab-krknctl": {
+    "char_count": 1106,
+    "source_path": "scenarios/time-scenarios/_tab-krknctl.md"
+  },
+  "scenarios/zone-outage-scenarios": {
+    "char_count": 1084,
+    "source_path": "scenarios/zone-outage-scenarios/_index.md"
+  },
+  "scenarios/zone-outage-scenarios--tab-krkn": {
+    "char_count": 5422,
+    "source_path": "scenarios/zone-outage-scenarios/_tab-krkn.md"
+  },
+  "scenarios/zone-outage-scenarios--tab-krkn-hub": {
+    "char_count": 5304,
+    "source_path": "scenarios/zone-outage-scenarios/_tab-krkn-hub.md"
+  },
+  "scenarios/zone-outage-scenarios--tab-krknctl": {
+    "char_count": 1406,
+    "source_path": "scenarios/zone-outage-scenarios/_tab-krknctl.md"
+  },
+  "security": {
+    "char_count": 12632,
+    "source_path": "security.md"
+  }
+}
