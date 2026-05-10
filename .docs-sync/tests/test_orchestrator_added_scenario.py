@@ -167,3 +167,118 @@ class TestAddedScenarioE2E:
         docs = _setup_website_fixture(tmp_path)
         written = _draft_added_scenarios([], content_root=docs)
         assert written == []
+
+
+class TestAddedScenarioStateTracking:
+    """State.md must be updated as each scenario draft progresses so a
+    failed mid-run leaves an actionable trail on the PR branch."""
+
+    def test_state_marked_done_draft_after_accepted_draft(self, tmp_path: Path):
+        from orchestrator import _draft_added_scenarios
+        from state.state_md import (
+            STATUS_DONE_DRAFT,
+            add_scenario,
+            load,
+            new_state,
+        )
+
+        docs = _setup_website_fixture(tmp_path)
+        scenario = _make_added_scenario()
+        state = new_state("o/r", 1, "h", "b")
+        add_scenario(state, scenario.name, "added")
+        state_path = tmp_path / "STATE.md"
+
+        good_draft = DraftResult(accepted=True, body=_good_body(),
+                                 rejections=[], response=None)
+        clean_verdict = JudgeVerdict(
+            verdict=JUDGE_VERDICT_CLEAN, reasoning="ok", flagged_phrases=[],
+        )
+
+        with patch("orchestrator.draft_new_scenario_prose", return_value=good_draft), \
+             patch("orchestrator.judge_draft", return_value=clean_verdict):
+            written = _draft_added_scenarios(
+                [scenario], content_root=docs,
+                state=state, state_path=state_path,
+            )
+
+        assert written is not None and len(written) == 1
+        # In-memory state updated
+        sc = next(s for s in state.scenarios if s.name == scenario.name)
+        assert sc.status == STATUS_DONE_DRAFT
+        assert sc.target_files and sc.target_files[0].endswith("_index.md")
+        # Disk state was persisted and round-trips
+        loaded = load(state_path)
+        assert loaded is not None
+        loaded_sc = next(s for s in loaded.scenarios if s.name == scenario.name)
+        assert loaded_sc.status == STATUS_DONE_DRAFT
+
+    def test_state_marked_failed_draft_on_rejection(self, tmp_path: Path):
+        from orchestrator import _draft_added_scenarios
+        from agent.draft_new_scenario import RejectionReason
+        from state.state_md import (
+            STATUS_FAILED_DRAFT,
+            add_scenario,
+            load,
+            new_state,
+        )
+
+        docs = _setup_website_fixture(tmp_path)
+        scenario = _make_added_scenario()
+        state = new_state("o/r", 1, "h", "b")
+        add_scenario(state, scenario.name, "added")
+        state_path = tmp_path / "STATE.md"
+
+        bad_draft = DraftResult(
+            accepted=False, body="bad", response=None,
+            rejections=[RejectionReason("too_short", "too short")],
+        )
+
+        with patch("orchestrator.draft_new_scenario_prose", return_value=bad_draft):
+            written = _draft_added_scenarios(
+                [scenario], content_root=docs,
+                state=state, state_path=state_path,
+            )
+
+        assert written is None
+        # The rejection must have been recorded so the PR shows the failure.
+        loaded = load(state_path)
+        assert loaded is not None
+        sc = next(s for s in loaded.scenarios if s.name == scenario.name)
+        assert sc.status == STATUS_FAILED_DRAFT
+        assert "too_short" in sc.notes
+
+    def test_state_notes_judge_flagged_drafts(self, tmp_path: Path):
+        from orchestrator import _draft_added_scenarios
+        from state.state_md import (
+            STATUS_DONE_DRAFT,
+            add_scenario,
+            load,
+            new_state,
+        )
+
+        docs = _setup_website_fixture(tmp_path)
+        scenario = _make_added_scenario()
+        state = new_state("o/r", 1, "h", "b")
+        add_scenario(state, scenario.name, "added")
+        state_path = tmp_path / "STATE.md"
+
+        good_draft = DraftResult(accepted=True, body=_good_body(),
+                                 rejections=[], response=None)
+        flagged = JudgeVerdict(
+            verdict=JUDGE_VERDICT_FLAGGED, reasoning="suspect",
+            flagged_phrases=["something_fake"],
+        )
+
+        with patch("orchestrator.draft_new_scenario_prose", return_value=good_draft), \
+             patch("orchestrator.judge_draft", return_value=flagged):
+            _draft_added_scenarios(
+                [scenario], content_root=docs,
+                state=state, state_path=state_path,
+            )
+
+        loaded = load(state_path)
+        assert loaded is not None
+        sc = next(s for s in loaded.scenarios if s.name == scenario.name)
+        # File still written (judge doesn't block); state note flags it for review
+        assert sc.status == STATUS_DONE_DRAFT
+        assert "judge-flagged" in sc.notes

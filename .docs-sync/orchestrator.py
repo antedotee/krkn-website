@@ -45,6 +45,18 @@ from github_ops import fetch_upstream_digest, get_changed_paths
 from regen.orchestrate import apply_regen_to_modified_scenarios
 from regen.parameter_table import regenerate_table
 from security_utils import run_command_safe, sanitize_output
+from state.state_md import (
+    STATUS_DONE_DRAFT,
+    STATUS_DONE_REGEN,
+    STATUS_FAILED_DRAFT,
+    STATUS_FAILED_HUGO,
+    STATUS_IN_PROGRESS,
+    StateMd,
+    add_scenario,
+    mark_scenario,
+    new_state,
+    save as save_state,
+)
 
 
 # Exit codes (also written to GHA $GITHUB_OUTPUT for the workflow to read)
@@ -114,9 +126,16 @@ def _scenario_to_dir_name(name: str) -> str:
     return name
 
 
+# Where STATE.md gets written on the PR branch. Lives under .docs-sync/ so
+# it's visually adjacent to repo-map.yaml and AGENTS.md when humans browse.
+_STATE_MD_PATH = Path(".docs-sync/STATE.md")
+
+
 def _draft_added_scenarios(
     scenarios: list[Scenario],
     content_root: Path,
+    state: StateMd | None = None,
+    state_path: Path | None = None,
 ) -> list[Path] | None:
     """For each added scenario, draft an `_index.md` body via LLM, validate,
     judge, and (if all checks pass) write the file.
@@ -131,6 +150,11 @@ def _draft_added_scenarios(
     written: list[Path] = []
     for scenario in scenarios:
         print(f"[Stage 1.5] drafting prose for added scenario: {scenario.name}")
+        if state is not None:
+            mark_scenario(state, scenario.name, status=STATUS_IN_PROGRESS)
+            if state_path is not None:
+                save_state(state, state_path)
+
         result = draft_new_scenario_prose(
             scenario=scenario,
             taxonomy=taxonomy,
@@ -138,11 +162,22 @@ def _draft_added_scenarios(
             max_attempts=2,
         )
         if not result.accepted:
+            rejection_summary = ", ".join(
+                f"{r.code}({r.message})" for r in result.rejections
+            )
             print(
                 f"[Stage 1.5] REJECTED draft for {scenario.name}: "
-                + ", ".join(f"{r.code}({r.message})" for r in result.rejections),
+                + rejection_summary,
                 file=sys.stderr,
             )
+            if state is not None:
+                mark_scenario(
+                    state, scenario.name,
+                    status=STATUS_FAILED_DRAFT,
+                    notes=f"draft rejected: {rejection_summary}",
+                )
+                if state_path is not None:
+                    save_state(state, state_path)
             return None  # abort the whole run — don't ship partial output
 
         # Run the judge on the accepted draft for an independent check.
@@ -174,6 +209,17 @@ def _draft_added_scenarios(
         )
         index_md.write_text(frontmatter + result.body.rstrip() + "\n", encoding="utf-8")
         written.append(index_md)
+
+        if state is not None:
+            notes = "judge-flagged" if verdict.verdict == JUDGE_VERDICT_FLAGGED else ""
+            mark_scenario(
+                state, scenario.name,
+                status=STATUS_DONE_DRAFT,
+                target_files=[str(index_md)],
+                notes=notes,
+            )
+            if state_path is not None:
+                save_state(state, state_path)
 
     return written
 
@@ -245,6 +291,23 @@ def run_pipeline(
         f"{len(change_set.scenarios_modified)} modified."
     )
 
+    # Initialize STATE.md now that we know the scenario list. We commit
+    # this file alongside the regen output so the PR shows what the bot
+    # planned to do and where it got stuck if anything failed.
+    state = new_state(
+        upstream_repo=upstream_repo,
+        pr_number=pr_number,
+        head_sha=head_sha,
+        base_sha=base_sha,
+    )
+    for s in change_set.scenarios_modified:
+        add_scenario(state, s.name, "modified")
+    for s in change_set.scenarios_added:
+        add_scenario(state, s.name, "added")
+    for s in change_set.scenarios_removed:
+        add_scenario(state, s.name, "removed")
+    save_state(state, _STATE_MD_PATH)
+
     # Slice 1 covers MODIFIED only — added/removed scenarios need prose
     # generation (Slice 2). Log them for visibility.
     if change_set.scenarios_added:
@@ -264,13 +327,18 @@ def run_pipeline(
         drafted_files = _draft_added_scenarios(
             scenarios=change_set.scenarios_added,
             content_root=Path("content/en/docs"),
+            state=state,
+            state_path=_STATE_MD_PATH,
         )
         if drafted_files is None:
+            save_state(state, _STATE_MD_PATH)
             return EXIT_DRAFT_REJECTED  # all draft attempts failed validation
         print(f"[Stage 1.5] drafted {len(drafted_files)} new scenario page(s).")
 
     if not change_set.scenarios_modified and not drafted_files:
         print("[Stage 1] no modified or added scenarios — nothing to do.")
+        state.completed = True
+        save_state(state, _STATE_MD_PATH)
         return EXIT_NO_FILES_MODIFIED
 
     # --- Stage 2: Mechanical regen -------------------------------------
@@ -288,8 +356,29 @@ def run_pipeline(
     for f in modified_files:
         print(f"  modified: {f}")
 
+    # Group regen-modified files by scenario name (dir-name segment between
+    # `scenarios/` and the file) so we can report per-scenario in STATE.md.
+    regen_files_by_scenario: dict[str, list[str]] = {}
+    for f in modified_files:
+        parts = f.parts
+        if "scenarios" in parts:
+            i = parts.index("scenarios")
+            if i + 1 < len(parts):
+                regen_files_by_scenario.setdefault(parts[i + 1], []).append(str(f))
+    for scenario in change_set.scenarios_modified:
+        files = regen_files_by_scenario.get(scenario.name, [])
+        if files:
+            mark_scenario(
+                state, scenario.name,
+                status=STATUS_DONE_REGEN,
+                target_files=files,
+            )
+    save_state(state, _STATE_MD_PATH)
+
     if not modified_files:
         print("[Stage 2] no files needed updating (already up to date).")
+        state.completed = True
+        save_state(state, _STATE_MD_PATH)
         return EXIT_NO_FILES_MODIFIED
 
     # --- Stage 3: Hugo validate (success silent, failure verbose) ------
@@ -300,6 +389,14 @@ def run_pipeline(
         if result.returncode != 0:
             print(f"[Stage 3] FAIL — Hugo build broke after regen.", file=sys.stderr)
             print(f"  stderr: {sanitize_output(result.stderr)}", file=sys.stderr)
+            # Mark every regen-done scenario as failed_hugo so the PR shows
+            # the build-break, then persist before returning.
+            for s in state.scenarios:
+                if s.status == STATUS_DONE_REGEN:
+                    mark_scenario(state, s.name, status=STATUS_FAILED_HUGO,
+                                  notes="Hugo build broke after this scenario")
+            state.notes = "Hugo build failed after mechanical regen; see CI logs."
+            save_state(state, _STATE_MD_PATH)
             return EXIT_HUGO_FAILED
         print("[Stage 3] Hugo build OK.")
     else:
@@ -312,6 +409,8 @@ def run_pipeline(
         print(f"[Stage 5] modified {len(modified_files)} file(s); "
               "the workflow's peter-evans step picks up from here.")
 
+    state.completed = True
+    save_state(state, _STATE_MD_PATH)
     return EXIT_PASS
 
 

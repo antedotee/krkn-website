@@ -125,6 +125,21 @@ jobs:
           echo '::error::orchestrator hit an unrecoverable error.'
           exit 1
 
+      # Inspect STATE.md (written by the orchestrator) to decide whether
+      # the PR needs the `judge-flagged` label. Grep is good enough — the
+      # marker is a stable token written by orchestrator._draft_added_scenarios
+      # into the notes field, which round-trips through the JSON block.
+      - name: Compute PR labels from STATE.md
+        id: compute_labels
+        if: steps.orchestrate.outputs.exit_code == '0'
+        run: |
+          if [ -f .docs-sync/STATE.md ] && grep -q "judge-flagged" .docs-sync/STATE.md; then
+            echo "labels=docs-sync,judge-flagged" >> $GITHUB_OUTPUT
+            echo '::notice::At least one draft was flagged by the judge — adding judge-flagged label.'
+          else
+            echo "labels=docs-sync" >> $GITHUB_OUTPUT
+          fi
+
       # ── Open the docs PR (Slice 1, mechanical-regen path) ───────────
       - name: Open docs-sync PR
         if: steps.orchestrate.outputs.exit_code == '0'
@@ -142,7 +157,7 @@ jobs:
             }}
           delete-branch: true
           draft: true
-          labels: docs-sync
+          labels: ${{ steps.compute_labels.outputs.labels }}
           commit-message: |
             docs(sync): mechanical regen from upstream PR
 
@@ -187,3 +202,11 @@ jobs:
 
             None — regen only touches content between AUTO markers. Site
             layout, shortcodes, navigation, frontmatter all unchanged.
+
+            ## Run state
+
+            See [`.docs-sync/STATE.md`](.docs-sync/STATE.md) on this branch for
+            the per-scenario progress trail (status, target files, judge
+            verdicts, token usage). If this PR is labeled `judge-flagged`,
+            the Phi-4-mini judge raised a concern about at least one drafted
+            scenario — review those pages closely before merging.
