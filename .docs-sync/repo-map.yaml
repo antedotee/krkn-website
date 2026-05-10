@@ -44,3 +44,37 @@ krkn-hub:
   doc_target_pattern:
     "{scenario}/env.sh": "content/en/docs/scenarios/{scenario_slug}/_tab-krkn-hub.md"
     "{scenario}/krknctl-input.json": "content/en/docs/scenarios/{scenario_slug}/_tab-krknctl.md"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEFERRED upstreams — uncomment as each fork moves to docs-sync-test branch.
+# See ../tasks/todo.md "DEFERRED — krkn upstream integration" for the full
+# checklist of what needs to happen before krkn is ready.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# krkn:
+#   # Source: krkn/scenario_plugins/<name>/{*_scenario_plugin.py, models.py}
+#   # Different shape from krkn-hub — Python modules with InputParams dataclass.
+#   # Extractor (build_upstream_digest.py on krkn fork) must use Python AST.
+#   doc_affecting_paths:
+#     - "krkn/scenario_plugins/*/models.py"
+#     - "krkn/scenario_plugins/*/*_scenario_plugin.py"
+#     - "krkn/scenario_plugins/abstract_scenario_plugin.py"
+#   always_skip_paths:
+#     - "tests/**"
+#     - "**/*.md"
+#     - ".github/**"
+#     - ".docs-sync/**"
+#     - ".docs-sync-digest/**"
+#     - "requirements*.txt"
+#     - "setup.py"
+#     - "pyproject.toml"
+#     - "config/**"
+#     - "scenarios/**"        # YAML examples, not source
+#     - "containers/**"
+#   doc_target_pattern:
+#     "krkn/scenario_plugins/{plugin}/**": "content/en/docs/scenarios/{plugin_kebab}/_tab-krkn.md"
+
+# krkn-ai:    # TODO Slice 5 — Python (likely Pydantic schemas)
+# cerberus:   # TODO Slice 6 — Python config keys + custom_checks/
+# krknctl:    # TODO Slice 7 — Go cobra CLI flag tree
