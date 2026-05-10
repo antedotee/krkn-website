@@ -247,6 +247,84 @@ class TestAddedScenarioStateTracking:
         assert sc.status == STATUS_FAILED_DRAFT
         assert "too_short" in sc.notes
 
+    def test_reflection_accumulates_tokens_across_draft_and_judge(self, tmp_path: Path):
+        """Token usage must be summed per-model so REFLECTION.md can show
+        the harvester where the budget actually went."""
+        from orchestrator import _draft_added_scenarios
+        from reflection.writer import OUTCOME_PASS, new_reflection
+        from state.state_md import add_scenario, new_state
+
+        docs = _setup_website_fixture(tmp_path)
+        scenario = _make_added_scenario()
+        state = new_state("o/r", 1, "h", "b")
+        add_scenario(state, scenario.name, "added")
+        reflection = new_reflection("o/r", 1, "h", OUTCOME_PASS)
+
+        good_draft = DraftResult(
+            accepted=True, body=_good_body(), rejections=[],
+            response=LLMResponse(
+                content=_good_body(), model="gemini-2.5-flash",
+                finish_reason="stop", prompt_tokens=100, completion_tokens=350,
+            ),
+            attempts=1,
+        )
+        clean_verdict = JudgeVerdict(
+            verdict=JUDGE_VERDICT_CLEAN, reasoning="ok", flagged_phrases=[],
+            response=LLMResponse(
+                content="{}", model="phi-4-mini-instruct",
+                finish_reason="stop", prompt_tokens=50, completion_tokens=20,
+            ),
+        )
+
+        with patch("orchestrator.draft_new_scenario_prose", return_value=good_draft), \
+             patch("orchestrator.judge_draft", return_value=clean_verdict):
+            _draft_added_scenarios(
+                [scenario], content_root=docs,
+                state=state, state_path=tmp_path / "STATE.md",
+                reflection=reflection,
+            )
+
+        # Per-model breakdown
+        assert reflection.token_usage_by_model["gemini-2.5-flash"] == 350
+        assert reflection.token_usage_by_model["phi-4-mini-instruct"] == 20
+        assert reflection.token_usage_total == 370
+        # No retries — accepted on first try
+        assert reflection.retries == 0
+
+    def test_reflection_counts_draft_retries(self, tmp_path: Path):
+        """An accepted-on-attempt-2 draft must show retries=1 in REFLECTION."""
+        from orchestrator import _draft_added_scenarios
+        from reflection.writer import OUTCOME_PASS, new_reflection
+        from state.state_md import add_scenario, new_state
+
+        docs = _setup_website_fixture(tmp_path)
+        scenario = _make_added_scenario()
+        state = new_state("o/r", 1, "h", "b")
+        add_scenario(state, scenario.name, "added")
+        reflection = new_reflection("o/r", 1, "h", OUTCOME_PASS)
+
+        retried_draft = DraftResult(
+            accepted=True, body=_good_body(), rejections=[],
+            response=LLMResponse(
+                content=_good_body(), model="gemini-2.5-flash",
+                finish_reason="stop", prompt_tokens=100, completion_tokens=400,
+            ),
+            attempts=2,
+        )
+        clean_verdict = JudgeVerdict(
+            verdict=JUDGE_VERDICT_CLEAN, reasoning="ok", flagged_phrases=[],
+        )
+
+        with patch("orchestrator.draft_new_scenario_prose", return_value=retried_draft), \
+             patch("orchestrator.judge_draft", return_value=clean_verdict):
+            _draft_added_scenarios(
+                [scenario], content_root=docs,
+                state=state, state_path=tmp_path / "STATE.md",
+                reflection=reflection,
+            )
+
+        assert reflection.retries == 1
+
     def test_state_notes_judge_flagged_drafts(self, tmp_path: Path):
         from orchestrator import _draft_added_scenarios
         from state.state_md import (

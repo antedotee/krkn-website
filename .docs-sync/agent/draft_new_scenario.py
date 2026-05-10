@@ -56,6 +56,7 @@ class DraftResult:
     body: str
     rejections: list[RejectionReason]
     response: LLMResponse | None = None
+    attempts: int = 1  # how many tries it took (1 if accepted on first)
 
 
 def _load_skill() -> str:
@@ -223,6 +224,7 @@ def draft(
                 body=body,
                 rejections=[],
                 response=response,
+                attempts=attempt + 1,
             )
         last_rejections = rejections
 
@@ -231,4 +233,5 @@ def draft(
         body=last_response.content if last_response else "",
         rejections=last_rejections,
         response=last_response,
+        attempts=max_attempts,
     )

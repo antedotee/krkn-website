@@ -45,6 +45,15 @@ from github_ops import fetch_upstream_digest, get_changed_paths
 from regen.orchestrate import apply_regen_to_modified_scenarios
 from regen.parameter_table import regenerate_table
 from security_utils import run_command_safe, sanitize_output
+from reflection.writer import (
+    OUTCOME_HUGO_FAILED,
+    OUTCOME_PASS,
+    OUTCOME_REJECTED,
+    OUTCOME_SKIPPED,
+    Reflection,
+    new_reflection,
+    save as save_reflection,
+)
 from state.state_md import (
     STATUS_DONE_DRAFT,
     STATUS_DONE_REGEN,
@@ -129,6 +138,19 @@ def _scenario_to_dir_name(name: str) -> str:
 # Where STATE.md gets written on the PR branch. Lives under .docs-sync/ so
 # it's visually adjacent to repo-map.yaml and AGENTS.md when humans browse.
 _STATE_MD_PATH = Path(".docs-sync/STATE.md")
+_REFLECTION_MD_PATH = Path(".docs-sync/REFLECTION.md")
+
+
+def _accumulate_tokens(reflection: Reflection, response) -> None:
+    """Add this LLM call's output tokens to the reflection's running totals."""
+    if response is None:
+        return
+    model = getattr(response, "model", "") or "unknown"
+    tokens = int(getattr(response, "completion_tokens", 0) or 0)
+    reflection.token_usage_total += tokens
+    reflection.token_usage_by_model[model] = (
+        reflection.token_usage_by_model.get(model, 0) + tokens
+    )
 
 
 def _draft_added_scenarios(
@@ -136,6 +158,7 @@ def _draft_added_scenarios(
     content_root: Path,
     state: StateMd | None = None,
     state_path: Path | None = None,
+    reflection: Reflection | None = None,
 ) -> list[Path] | None:
     """For each added scenario, draft an `_index.md` body via LLM, validate,
     judge, and (if all checks pass) write the file.
@@ -161,6 +184,10 @@ def _draft_added_scenarios(
             voice_samples=voice_samples,
             max_attempts=2,
         )
+        if reflection is not None:
+            _accumulate_tokens(reflection, result.response)
+            # `attempts > 1` means at least one retry happened — surface it.
+            reflection.retries += max(0, result.attempts - 1)
         if not result.accepted:
             rejection_summary = ", ".join(
                 f"{r.code}({r.message})" for r in result.rejections
@@ -182,6 +209,8 @@ def _draft_added_scenarios(
 
         # Run the judge on the accepted draft for an independent check.
         verdict = judge_draft(scenario, result.body, taxonomy)
+        if reflection is not None:
+            _accumulate_tokens(reflection, verdict.response)
         print(f"[Stage 1.5] judge verdict for {scenario.name}: "
               f"{verdict.verdict} — {verdict.reasoning}")
         if verdict.verdict == JUDGE_VERDICT_FLAGGED:
@@ -308,6 +337,20 @@ def run_pipeline(
         add_scenario(state, s.name, "removed")
     save_state(state, _STATE_MD_PATH)
 
+    # Initialize REFLECTION.md — outcome starts as PASS, downgraded if
+    # anything fails. The harvester picks up the final file from this branch.
+    reflection = new_reflection(
+        upstream_repo=upstream_repo,
+        pr_number=pr_number,
+        head_sha=head_sha,
+        outcome=OUTCOME_PASS,
+    )
+    reflection.scenarios_processed = (
+        [s.name for s in change_set.scenarios_modified]
+        + [s.name for s in change_set.scenarios_added]
+        + [s.name for s in change_set.scenarios_removed]
+    )
+
     # Slice 1 covers MODIFIED only — added/removed scenarios need prose
     # generation (Slice 2). Log them for visibility.
     if change_set.scenarios_added:
@@ -329,9 +372,12 @@ def run_pipeline(
             content_root=Path("content/en/docs"),
             state=state,
             state_path=_STATE_MD_PATH,
+            reflection=reflection,
         )
         if drafted_files is None:
             save_state(state, _STATE_MD_PATH)
+            reflection.outcome = OUTCOME_REJECTED
+            save_reflection(reflection, _REFLECTION_MD_PATH)
             return EXIT_DRAFT_REJECTED  # all draft attempts failed validation
         print(f"[Stage 1.5] drafted {len(drafted_files)} new scenario page(s).")
 
@@ -339,6 +385,8 @@ def run_pipeline(
         print("[Stage 1] no modified or added scenarios — nothing to do.")
         state.completed = True
         save_state(state, _STATE_MD_PATH)
+        reflection.outcome = OUTCOME_SKIPPED
+        save_reflection(reflection, _REFLECTION_MD_PATH)
         return EXIT_NO_FILES_MODIFIED
 
     # --- Stage 2: Mechanical regen -------------------------------------
@@ -379,6 +427,8 @@ def run_pipeline(
         print("[Stage 2] no files needed updating (already up to date).")
         state.completed = True
         save_state(state, _STATE_MD_PATH)
+        reflection.outcome = OUTCOME_SKIPPED
+        save_reflection(reflection, _REFLECTION_MD_PATH)
         return EXIT_NO_FILES_MODIFIED
 
     # --- Stage 3: Hugo validate (success silent, failure verbose) ------
@@ -397,6 +447,8 @@ def run_pipeline(
                                   notes="Hugo build broke after this scenario")
             state.notes = "Hugo build failed after mechanical regen; see CI logs."
             save_state(state, _STATE_MD_PATH)
+            reflection.outcome = OUTCOME_HUGO_FAILED
+            save_reflection(reflection, _REFLECTION_MD_PATH)
             return EXIT_HUGO_FAILED
         print("[Stage 3] Hugo build OK.")
     else:
@@ -411,6 +463,8 @@ def run_pipeline(
 
     state.completed = True
     save_state(state, _STATE_MD_PATH)
+    reflection.outcome = OUTCOME_PASS
+    save_reflection(reflection, _REFLECTION_MD_PATH)
     return EXIT_PASS
 
 

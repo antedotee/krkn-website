@@ -45,6 +45,7 @@ class JudgeVerdict:
     verdict: str            # clean | flagged | unavailable
     reasoning: str          # one-sentence summary, useful for PR body
     flagged_phrases: list[str]  # specific phrases the judge thought hallucinated
+    response: LLMResponse | None = None  # carries token usage for reflection
 
 
 def _build_judge_messages(
@@ -172,5 +173,7 @@ def judge(
             verdict=JUDGE_VERDICT_UNAVAILABLE,
             reasoning="judge returned unparseable response",
             flagged_phrases=[],
+            response=response,
         )
+    parsed.response = response
     return parsed
