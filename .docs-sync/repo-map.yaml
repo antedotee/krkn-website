@@ -75,6 +75,97 @@ krkn-hub:
 #   doc_target_pattern:
 #     "krkn/scenario_plugins/{plugin}/**": "content/en/docs/scenarios/{plugin_kebab}/_tab-krkn.md"
 
-# krkn-ai:    # TODO Slice 5 — Python (likely Pydantic schemas)
-# cerberus:   # TODO Slice 6 — Python config keys + custom_checks/
-# krknctl:    # TODO Slice 7 — Go cobra CLI flag tree
+# ─────────────────────────────────────────────────────────────────────────────
+# Slice 4 — krkn-ai (Python project; AI workflow primitives in krkn_ai/)
+# Path gate is wired here; build_upstream_digest.py + extractor still TODO
+# (separate task — see todo.md "Slice 4 — krkn-ai extractor").
+# ─────────────────────────────────────────────────────────────────────────────
+krkn-ai:
+  doc_affecting_paths:
+    - "krkn_ai/algorithm/**/*.py"
+    - "krkn_ai/chaos_engines/**/*.py"
+    - "krkn_ai/cli/**/*.py"
+    - "krkn_ai/constants.py"
+    - "krkn_ai/models/**/*.py"
+    - "krkn_ai/templates/**"
+
+  always_skip_paths:
+    - "tests/**"
+    - ".github/**"
+    - ".docs-sync/**"
+    - ".docs-sync-digest/**"
+    - "**/*.md"
+    - "requirements*.txt"
+    - "setup.py"
+    - "pyproject.toml"
+    - "mypy.ini"
+    - "containers/**"
+    - "scripts/**"
+    - "docs/**"            # human-curated; not auto-synced
+    - "krkn_ai/dashboard/**"   # UI assets — separate concern
+    - "krkn_ai/reporter/**"    # output formatters — internal
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Slice 5 — cerberus (Python health monitor; config keys + custom checks)
+# ─────────────────────────────────────────────────────────────────────────────
+cerberus:
+  doc_affecting_paths:
+    - "cerberus/**/*.py"
+    - "config/*.yaml"
+    - "custom_checks/*.py"
+
+  always_skip_paths:
+    - "tests/**"
+    - "CI/**"
+    - ".github/**"
+    - ".docs-sync/**"
+    - ".docs-sync-digest/**"
+    - "**/*.md"
+    - "requirements*.txt"
+    - "setup.py"
+    - "setup.cfg"
+    - "MANIFEST.in"
+    - "containers/**"
+    - "history/**"
+    - "kind-config.yml"
+    - "media/**"
+    - "docs/**"
+    - "cerberus/inspect/**"     # internal debug tooling
+    - "cerberus/database/**"    # storage layer — not user-facing
+    - "cerberus/slack/**"       # integration plumbing
+    - "cerberus/invoke/**"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Slice 6 — krknctl (Go cobra CLI; `cmd/` has subcommands, `examples/` has
+# scenario JSON fixtures the CLI consumes)
+# ─────────────────────────────────────────────────────────────────────────────
+krknctl:
+  doc_affecting_paths:
+    - "cmd/*.go"                          # cobra commands → CLI surface
+    - "pkg/config/**/*.go"                # public config types
+    - "pkg/scenarioorchestrator/**/*.go"  # scenario semantics
+    - "pkg/provider/**/*.go"              # container/source providers
+    - "examples/**"                       # canonical scenario fixtures
+
+  always_skip_paths:
+    - "tests/**"
+    - "**/*_test.go"           # Go convention — test files alongside source
+    - ".github/**"
+    - ".docs-sync/**"
+    - ".docs-sync-digest/**"
+    - "**/*.md"
+    - "go.mod"
+    - "go.sum"
+    - "install.sh"
+    - "staticcheck.conf"
+    - "media/**"
+    - "vendor/**"
+    - "plan.json"
+    - "pkg/cache/**"           # in-memory caching — internal
+    - "pkg/text/**"             # string helpers
+    - "pkg/utils/**"
+    - "pkg/typing/**"
+    - "pkg/dependencygraph/**"
+    - "pkg/randomgraph/**"

@@ -75,15 +75,22 @@ EXIT_HUGO_FAILED = 2           # mechanical regen broke Hugo build
 EXIT_SKIP_STAGE_A = 10
 EXIT_SKIP_STAGE_B = 11
 EXIT_DRAFT_REJECTED = 12       # all attempts at LLM draft failed validation
+EXIT_EXTRACTOR_DEFERRED = 13   # upstream registered but extractor not built yet
 EXIT_ERROR = 20
 
 
-# Map upstream short-name to its extractor entry point
+# Map upstream short-name to its extractor entry point.
+# Adding an extractor here is the final wiring step for a new upstream
+# (after repo-map.yaml entry + build_upstream_digest.py on the fork).
 _EXTRACTORS = {
     "krkn-hub": extract_krkn_hub,
-    # krkn, krkn-ai, cerberus, krknctl extractors come in later slices.
-    # See tasks/todo.md "DEFERRED — krkn upstream integration".
 }
+
+# Upstreams registered in repo-map.yaml but whose extractor is still TODO.
+# Dispatches from these exit cleanly with EXIT_EXTRACTOR_DEFERRED instead
+# of EXIT_ERROR — the path gate matters even when we can't yet sync, so
+# we don't want noisy workflow failures during the rollout window.
+_DEFERRED_UPSTREAMS = frozenset({"krkn-ai", "cerberus", "krknctl", "krkn"})
 
 
 def _emit_status(stage: str, result: GateResult) -> None:
@@ -307,8 +314,15 @@ def run_pipeline(
     # --- Stage 1: Extract structured ChangeSet -------------------------
     extractor = _EXTRACTORS.get(upstream_short)
     if extractor is None:
+        if upstream_short in _DEFERRED_UPSTREAMS:
+            print(f"[Stage 1] upstream {upstream_short!r} is registered in "
+                  f"repo-map.yaml but the extractor is not yet implemented. "
+                  f"Path gate fired correctly — exiting cleanly. "
+                  f"See tasks/todo.md for the slice that wires this upstream.")
+            return EXIT_EXTRACTOR_DEFERRED
         print(f"[Stage 1] no extractor for upstream {upstream_short!r} — "
-              f"see tasks/todo.md DEFERRED section. Stopping.",
+              f"add an entry to repo-map.yaml and an extractor in "
+              f".docs-sync/extractors/ if this is a new upstream.",
               file=sys.stderr)
         return EXIT_ERROR
 

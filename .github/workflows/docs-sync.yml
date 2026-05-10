@@ -113,6 +113,10 @@ jobs:
         if: steps.orchestrate.outputs.exit_code == '1'
         run: echo '::notice::Gates passed but regen produced no diff (already in sync).'
 
+      - name: Extractor deferred for this upstream
+        if: steps.orchestrate.outputs.exit_code == '13'
+        run: echo '::notice::Path gate fired but the extractor for this upstream is not yet wired. No PR opened.'
+
       - name: Hugo build broke
         if: steps.orchestrate.outputs.exit_code == '2'
         run: |
