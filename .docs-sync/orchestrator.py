@@ -37,15 +37,27 @@ import sys
 from pathlib import Path
 
 from discovery import path_gate, digest_diff, GateResult
+from extractors.krkn_hub import extract as extract_krkn_hub
 from github_ops import fetch_upstream_digest, get_changed_paths
-from security_utils import sanitize_output
+from regen.orchestrate import apply_regen_to_modified_scenarios
+from security_utils import run_command_safe, sanitize_output
 
 
 # Exit codes (also written to GHA $GITHUB_OUTPUT for the workflow to read)
 EXIT_PASS = 0
+EXIT_NO_FILES_MODIFIED = 1     # gates passed, regen ran, but produced no diff
+EXIT_HUGO_FAILED = 2           # mechanical regen broke Hugo build
 EXIT_SKIP_STAGE_A = 10
 EXIT_SKIP_STAGE_B = 11
 EXIT_ERROR = 20
+
+
+# Map upstream short-name to its extractor entry point
+_EXTRACTORS = {
+    "krkn-hub": extract_krkn_hub,
+    # krkn, krkn-ai, cerberus, krknctl extractors come in later slices.
+    # See tasks/todo.md "DEFERRED — krkn upstream integration".
+}
 
 
 def _emit_status(stage: str, result: GateResult) -> None:
@@ -109,15 +121,76 @@ def run_pipeline(
     if not b_result.passed:
         return EXIT_SKIP_STAGE_B
 
-    # --- Beyond Stage B is Slice 1+ work — STUB in Slice 0c -----------
+    # --- Stage 1: Extract structured ChangeSet -------------------------
+    extractor = _EXTRACTORS.get(upstream_short)
+    if extractor is None:
+        print(f"[Stage 1] no extractor for upstream {upstream_short!r} — "
+              f"see tasks/todo.md DEFERRED section. Stopping.",
+              file=sys.stderr)
+        return EXIT_ERROR
+
+    change_set = extractor(head_digest=head_digest, base_digest=base_digest)
     print(
-        "[Stage 1+] (stub) — would now run plan, mechanical regen, "
-        "prose generation, judge, and open PR. "
-        f"Slice 0c verifies that the gate routes correctly."
+        f"[Stage 1] ChangeSet: "
+        f"{len(change_set.scenarios_added)} added, "
+        f"{len(change_set.scenarios_removed)} removed, "
+        f"{len(change_set.scenarios_modified)} modified."
     )
 
+    # Slice 1 covers MODIFIED only — added/removed scenarios need prose
+    # generation (Slice 2). Log them for visibility.
+    if change_set.scenarios_added:
+        print(f"[Stage 1] note: {len(change_set.scenarios_added)} added scenario(s) "
+              "deferred to Slice 2 (prose): "
+              f"{', '.join(s.name for s in change_set.scenarios_added)}")
+    if change_set.scenarios_removed:
+        print(f"[Stage 1] note: {len(change_set.scenarios_removed)} removed scenario(s) "
+              "deferred to Slice 2 (deprecation prose): "
+              f"{', '.join(s.name for s in change_set.scenarios_removed)}")
+
+    if not change_set.scenarios_modified:
+        print("[Stage 1] no modified scenarios — Slice 1 has nothing to do.")
+        return EXIT_NO_FILES_MODIFIED
+
+    # --- Stage 2: Mechanical regen -------------------------------------
+    content_root = Path("content/en/docs")
+    if not content_root.is_dir():
+        print(f"[Stage 2] content root {content_root} not found — wrong CWD?",
+              file=sys.stderr)
+        return EXIT_ERROR
+
+    modified_files = apply_regen_to_modified_scenarios(
+        change_set=change_set,
+        content_root=content_root,
+    )
+    print(f"[Stage 2] regen wrote {len(modified_files)} file(s).")
+    for f in modified_files:
+        print(f"  modified: {f}")
+
+    if not modified_files:
+        print("[Stage 2] no files needed updating (already up to date).")
+        return EXIT_NO_FILES_MODIFIED
+
+    # --- Stage 3: Hugo validate (success silent, failure verbose) ------
+    hook_path = Path(".docs-sync/hooks/hugo_validate.sh")
+    if hook_path.is_file():
+        print("[Stage 3] running Hugo validation...")
+        result = run_command_safe(["bash", str(hook_path)], check=False)
+        if result.returncode != 0:
+            print(f"[Stage 3] FAIL — Hugo build broke after regen.", file=sys.stderr)
+            print(f"  stderr: {sanitize_output(result.stderr)}", file=sys.stderr)
+            return EXIT_HUGO_FAILED
+        print("[Stage 3] Hugo build OK.")
+    else:
+        print(f"[Stage 3] hook not found at {hook_path} — skipping (slice 0c).")
+
     if dry_run:
-        print("[dry-run] not opening PR")
+        print("[Stage 5] dry-run — not opening PR. Modified files are on disk; "
+              "the workflow's peter-evans step would commit and open the PR here.")
+    else:
+        print(f"[Stage 5] modified {len(modified_files)} file(s); "
+              "the workflow's peter-evans step picks up from here.")
+
     return EXIT_PASS
 
 
