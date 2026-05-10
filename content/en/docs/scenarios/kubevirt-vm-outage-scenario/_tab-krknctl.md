@@ -7,12 +7,14 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters:  (be sure to scroll to right)
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | Possible Values | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | :----------------:  | 
 `--namespace` | VMI Namespace to target | string | Yes | default | 
 `--vm-name` | Name of the VM to delete | string | Yes | | 
 `--timeout` | Time that scenario will wait for VM to come back | number | No | 60 | 
 `--kill-count` | Number of VMI's to kill (will perform serially) | number | No | 1| 
+<!-- AUTO:END -->
 
 #### Behavior Notes
 

@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      |  Default | 
 | ----------------------- | ----------------------    | ----------------  | ------------------------------------ | 
 `--target-endpoints` | Semicolon-separated list of target endpoints. Format: METHOD URL;METHOD URL HEADER1:VAL1,HEADER2:VAL2 BODY. Example: GET https://myapp.example.com/health;POST https://myapp.example.com/api Content-Type:application/json {\"key\":\"value\"} | string | **Required** |
@@ -21,6 +22,7 @@ Scenario specific parameters:
 `--image` | The container image that will be used to perform the scenario | string | quay.io/krkn-chaos/krkn-http-load:latest | 
 `--insecure` | Skip TLS certificate verification (for self-signed certs) | string | false |
 `--node-selectors` | The node selectors are used to guide the cluster on where to deploy attacker pods. You can specify one or more labels in the format key=value;key=value2 (even using the same key) to choose one or more node categories. If left empty, the pods will be scheduled on any available node, depending on the cluster s capacity.  | string |
+<!-- AUTO:END -->
 
 
 

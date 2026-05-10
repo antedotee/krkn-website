@@ -6,6 +6,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters:
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--namespace` | Targeted namespace in the cluster ( supports regex ) | string | No | openshift-* |
@@ -17,6 +18,7 @@ Scenario specific parameters:
 `--expected-recovery-time` | Fails if the pod disrupted do not recover within the timeout set | number | No | 120 |
 `--node-label-selector` | Label of the node(s) to target | string | No | "" |
 `--node-names` | Name of the node(s) to target. Example: ["worker-node-1","worker-node-2","master-node-1"] | string | No | [] |
+<!-- AUTO:END -->
 
 #### Behavior Notes
 

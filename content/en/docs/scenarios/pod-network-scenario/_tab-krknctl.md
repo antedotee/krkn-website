@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--namespace` | Namespace of the pod to which filter need to be applied  | string | Yes |
@@ -20,6 +21,7 @@ Scenario specific parameters:
 `--egress-ports` | Egress ports to block ( needs to be a list )  | string | No |   | 
 `--wait-duration` | Ensure that it is at least about twice of test_duration  | number | No |  300 | 
 `--test-duration` | Duration of the test run  | number | No |  120 | 
+<!-- AUTO:END -->
 
 #### Parameter Dependencies
 

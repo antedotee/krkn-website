@@ -5,6 +5,7 @@ krknctl run kubevirt-outage [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:  (be sure to scroll to right)
+
 | Parameter      | Description    | Type      | Required |  Default | Possible Values |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | :----------------:  |
 `--namespace` | VMI Namespace to target | string | Yes | default |

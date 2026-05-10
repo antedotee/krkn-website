@@ -5,6 +5,7 @@ krknctl run network-chaos [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--traffic-type` | Selects the network chaos scenario type can be ingress or egress | enum | Yes | ingress \| egress

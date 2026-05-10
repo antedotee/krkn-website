@@ -31,12 +31,14 @@ scenarios:
 
 ## Detailed Parameters
 
+<!-- AUTO:START id="params" -->
 | Parameter | Description | Required | Default | Example Values |
 |-----------|-------------|----------|---------|----------------|
 | vm_name | The name of the VMI to delete | Yes | N/A | "database-vm", "web-server-vm" |
 | namespace | The namespace where the VMI is located | No | "default" | "openshift-cnv", "vm-workloads" |
 | timeout | How long to wait (in seconds) for VMI to become running before attempting recovery | No | 60 | 30, 120, 300 |
 | kill_count | How many VMI's to kill serially | No | 1 | 3 |
+<!-- AUTO:END -->
 
 ## Execution Flow
 

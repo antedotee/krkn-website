@@ -1,6 +1,6 @@
 {
   "_root": {
-    "char_count": 14476,
+    "char_count": 14398,
     "source_path": "_index.md"
   },
   "cerberus": {
@@ -136,7 +136,7 @@
     "source_path": "installation/krkn-dashboard.md"
   },
   "installation/krkn-hub": {
-    "char_count": 2014,
+    "char_count": 1979,
     "source_path": "installation/krkn-hub.md"
   },
   "installation/krknctl": {
@@ -320,7 +320,7 @@
     "source_path": "scenarios/application-outage/_tab-krkn-hub.md"
   },
   "scenarios/application-outage--tab-krknctl": {
-    "char_count": 1412,
+    "char_count": 1413,
     "source_path": "scenarios/application-outage/_tab-krknctl.md"
   },
   "scenarios/aurora-disruption": {
@@ -356,7 +356,7 @@
     "source_path": "scenarios/container-scenario/_tab-krkn-hub.md"
   },
   "scenarios/container-scenario--tab-krknctl": {
-    "char_count": 1339,
+    "char_count": 1340,
     "source_path": "scenarios/container-scenario/_tab-krknctl.md"
   },
   "scenarios/dns-outage": {
@@ -412,7 +412,7 @@
     "source_path": "scenarios/hog-scenarios/_index.md"
   },
   "scenarios/hog-scenarios/cpu-hog-scenario": {
-    "char_count": 1726,
+    "char_count": 1669,
     "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_index.md"
   },
   "scenarios/hog-scenarios/cpu-hog-scenario--tab-krkn": {
@@ -428,11 +428,11 @@
     "source_path": "scenarios/hog-scenarios/cpu-hog-scenario/_tab-krknctl.md"
   },
   "scenarios/hog-scenarios/io-hog-scenario": {
-    "char_count": 2548,
+    "char_count": 2491,
     "source_path": "scenarios/hog-scenarios/io-hog-scenario/_index.md"
   },
   "scenarios/hog-scenarios/io-hog-scenario--tab-krkn": {
-    "char_count": 3299,
+    "char_count": 3300,
     "source_path": "scenarios/hog-scenarios/io-hog-scenario/_tab-krkn.md"
   },
   "scenarios/hog-scenarios/io-hog-scenario--tab-krkn-hub": {
@@ -444,7 +444,7 @@
     "source_path": "scenarios/hog-scenarios/io-hog-scenario/_tab-krknctl.md"
   },
   "scenarios/hog-scenarios/memory-hog-scenario": {
-    "char_count": 2189,
+    "char_count": 2132,
     "source_path": "scenarios/hog-scenarios/memory-hog-scenario/_index.md"
   },
   "scenarios/hog-scenarios/memory-hog-scenario--tab-krkn": {
@@ -472,7 +472,7 @@
     "source_path": "scenarios/http-load-scenario/_tab-krkn-hub.md"
   },
   "scenarios/http-load-scenario--tab-krknctl": {
-    "char_count": 1970,
+    "char_count": 1971,
     "source_path": "scenarios/http-load-scenario/_tab-krknctl.md"
   },
   "scenarios/kubevirt-vm-outage-scenario": {
@@ -484,11 +484,11 @@
     "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krkn.md"
   },
   "scenarios/kubevirt-vm-outage-scenario--tab-krkn-hub": {
-    "char_count": 4109,
+    "char_count": 4110,
     "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krkn-hub.md"
   },
   "scenarios/kubevirt-vm-outage-scenario--tab-krknctl": {
-    "char_count": 1089,
+    "char_count": 1090,
     "source_path": "scenarios/kubevirt-vm-outage-scenario/_tab-krknctl.md"
   },
   "scenarios/managed-cluster-scenario/managed-cluster-scenario": {
@@ -564,7 +564,7 @@
     "source_path": "scenarios/network-chaos-scenario/_tab-krkn-hub.md"
   },
   "scenarios/network-chaos-scenario--tab-krknctl": {
-    "char_count": 2702,
+    "char_count": 2703,
     "source_path": "scenarios/network-chaos-scenario/_tab-krknctl.md"
   },
   "scenarios/node-scenarios": {
@@ -580,7 +580,7 @@
     "source_path": "scenarios/node-scenarios/_tab-krkn-hub.md"
   },
   "scenarios/node-scenarios--tab-krknctl": {
-    "char_count": 3830,
+    "char_count": 3831,
     "source_path": "scenarios/node-scenarios/_tab-krknctl.md"
   },
   "scenarios/node-scenarios/node-scenarios-bm-krkn-hub": {
@@ -600,7 +600,7 @@
     "source_path": "scenarios/pod-network-scenario/_tab-krkn-hub.md"
   },
   "scenarios/pod-network-scenario--tab-krknctl": {
-    "char_count": 1945,
+    "char_count": 1946,
     "source_path": "scenarios/pod-network-scenario/_tab-krknctl.md"
   },
   "scenarios/pod-scenario": {
@@ -616,7 +616,7 @@
     "source_path": "scenarios/pod-scenario/_tab-krkn-hub.md"
   },
   "scenarios/pod-scenario--tab-krknctl": {
-    "char_count": 1593,
+    "char_count": 1594,
     "source_path": "scenarios/pod-scenario/_tab-krknctl.md"
   },
   "scenarios/power-outage-scenarios": {
@@ -632,7 +632,7 @@
     "source_path": "scenarios/power-outage-scenarios/_tab-krkn-hub.md"
   },
   "scenarios/power-outage-scenarios--tab-krknctl": {
-    "char_count": 1996,
+    "char_count": 1997,
     "source_path": "scenarios/power-outage-scenarios/_tab-krknctl.md"
   },
   "scenarios/pvc-scenario": {
@@ -648,7 +648,7 @@
     "source_path": "scenarios/pvc-scenario/_tab-krkn-hub.md"
   },
   "scenarios/pvc-scenario--tab-krknctl": {
-    "char_count": 1377,
+    "char_count": 1378,
     "source_path": "scenarios/pvc-scenario/_tab-krknctl.md"
   },
   "scenarios/service-disruption-scenarios": {
@@ -664,7 +664,7 @@
     "source_path": "scenarios/service-disruption-scenarios/_tab-krkn-hub.md"
   },
   "scenarios/service-disruption-scenarios--tab-krknctl": {
-    "char_count": 1182,
+    "char_count": 1183,
     "source_path": "scenarios/service-disruption-scenarios/_tab-krknctl.md"
   },
   "scenarios/service-hijacking-scenario": {
@@ -680,7 +680,7 @@
     "source_path": "scenarios/service-hijacking-scenario/_tab-krkn-hub.md"
   },
   "scenarios/service-hijacking-scenario--tab-krknctl": {
-    "char_count": 946,
+    "char_count": 947,
     "source_path": "scenarios/service-hijacking-scenario/_tab-krknctl.md"
   },
   "scenarios/syn-flood-scenario": {
@@ -696,7 +696,7 @@
     "source_path": "scenarios/syn-flood-scenario/_tab-krkn-hub.md"
   },
   "scenarios/syn-flood-scenario--tab-krknctl": {
-    "char_count": 1851,
+    "char_count": 1852,
     "source_path": "scenarios/syn-flood-scenario/_tab-krknctl.md"
   },
   "scenarios/time-scenarios": {
@@ -712,7 +712,7 @@
     "source_path": "scenarios/time-scenarios/_tab-krkn-hub.md"
   },
   "scenarios/time-scenarios--tab-krknctl": {
-    "char_count": 1106,
+    "char_count": 1107,
     "source_path": "scenarios/time-scenarios/_tab-krknctl.md"
   },
   "scenarios/zone-outage-scenarios": {
@@ -724,11 +724,11 @@
     "source_path": "scenarios/zone-outage-scenarios/_tab-krkn.md"
   },
   "scenarios/zone-outage-scenarios--tab-krkn-hub": {
-    "char_count": 5304,
+    "char_count": 5305,
     "source_path": "scenarios/zone-outage-scenarios/_tab-krkn-hub.md"
   },
   "scenarios/zone-outage-scenarios--tab-krknctl": {
-    "char_count": 1406,
+    "char_count": 1407,
     "source_path": "scenarios/zone-outage-scenarios/_tab-krknctl.md"
   },
   "security": {

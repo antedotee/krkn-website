@@ -5,6 +5,7 @@ krknctl run zone-outages [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--cloud-type` | Cloud platform on top of which cluster is running, supported platforms - aws,  gcp | enum | No | aws |

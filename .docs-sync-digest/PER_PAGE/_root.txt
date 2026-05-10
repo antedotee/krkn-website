@@ -219,7 +219,6 @@
 
 <div class="docs-landing">
 
-  <!-- Hero -->
   <section class="docs-hero">
     <div class="docs-hero__bg" aria-hidden="true"></div>
     <div class="docs-hero__inner">
@@ -228,7 +227,6 @@
     </div>
   </section>
 
-  <!-- Quick Start -->
   <section class="docs-quick-start">
     <div class="container">
       <h2 class="section-title">Quick Start</h2>
@@ -259,7 +257,6 @@
     </div>
   </section>
 
-  <!-- Explore -->
   <section class="docs-explore">
     <div class="container">
       <h2 class="section-title">Explore</h2>
@@ -318,7 +315,6 @@
     </div>
   </section>
 
-  <!-- Why Krkn -->
   <section class="docs-why">
     <div class="container">
       <h2 class="section-title">Why Krkn?</h2>

@@ -5,6 +5,7 @@ krknctl run time-scenarios [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--object-type` | Object to target. Supported options `pod` or `node` |enum| No | pod |

@@ -57,6 +57,7 @@ export <parameter_name>=<value>
 
 See list of variables that apply to all scenarios [here](/docs/scenarios/all-scenario-env.md) that can be used/set in addition to these scenario specific variables
 
+<!-- AUTO:START id="params" -->
 Parameter               | Description                                                           | Default
 ----------------------- | -----------------------------------------------------------------     | ------------------------------------ |
 OBJECT_TYPE             | Object to target. Supported options: pod, node                        | pod                                  |
@@ -65,6 +66,7 @@ ACTION                  | Action to run. Supported actions: skew_time, skew_date
 OBJECT_NAME             | List of the names of pods or nodes you want to skew ( optional parameter )                   | []                                   |
 CONTAINER_NAME          | Container in the specified pod to target in case the pod has multiple containers running. Random container is picked if empty   | ""                                   |
 NAMESPACE               | Namespace of the pods you want to skew, need to be set only if setting a specific pod name | ""                   |
+<!-- AUTO:END -->
 
 {{% alert title="Note" %}} In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`.{{% /alert %}}
  For example:

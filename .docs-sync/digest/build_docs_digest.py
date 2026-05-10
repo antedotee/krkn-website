@@ -33,6 +33,11 @@ _FRONTMATTER_RE = re.compile(r"^---\n.*?\n---\n?", re.DOTALL)
 # We strip the markers themselves but preserve any inner content (it's prose).
 _SHORTCODE_OPEN_CLOSE_RE = re.compile(r"\{\{[<%]\s*/?[^}]*?[%>]\}\}")
 
+# HTML comments — including the AUTO:START/AUTO:END markers added by
+# .docs-sync/migrate/add_auto_markers.py. Markers are meta tooling, not
+# content the LLM should see. Earned from Slice 0.5 finding M3.
+_HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+
 # Custom HTML-style shortcodes used by the krkn-chaos site, e.g.
 #   <krkn-hub-scenario id="pod-scenarios"> ... </krkn-hub-scenario>
 #   <krkn-namespace>...</krkn-namespace>
@@ -53,10 +58,12 @@ def strip_frontmatter(text: str) -> str:
 
 
 def strip_shortcodes(text: str) -> str:
-    """Remove Hugo shortcode markers and custom HTML shortcode tags.
+    """Remove Hugo shortcode markers, custom HTML shortcode tags, and HTML
+    comments (which include AUTO:START/AUTO:END markers from Slice 0.5).
 
     Inner prose between paired markers is preserved — it's still useful context.
     """
+    text = _HTML_COMMENT_RE.sub("", text)
     text = _SHORTCODE_OPEN_CLOSE_RE.sub("", text)
     text = _HTML_SHORTCODE_TAG_RE.sub("", text)
     return text

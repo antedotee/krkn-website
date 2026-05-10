@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--cloud-type` | Cloud platform on top of which cluster is running, supported platforms - aws,  gcp | enum | No | aws | 
@@ -19,6 +20,7 @@ Scenario specific parameters:
 `--aws-secret-access-key` | AWS Secret Access Key | string (secret)| No | 
 `--aws-default-region` | AWS default region | string | No | 
 `--gcp-application-credentials` | GCP application credentials file location | file | No | 
+<!-- AUTO:END -->
 
 NOTE: The secret string types will be masked when scenario is ran
 

@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--packet-size` | The size in bytes of the SYN packet |number | No | 120 |
@@ -19,6 +20,7 @@ Scenario specific parameters:
 `--number-of-pods` | The number of attacker pods that will be deployed | number | No | 2 | 
 `--image` | The container image that will be used to perform the scenario | string | No | quay.io/krkn-chaos/krkn-syn-flood:latest | 
 `--node-selectors` | The node selectors are used to guide the cluster on where to deploy attacker pods. You can specify one or more labels in the format key=value;key=value2 (even using the same key) to choose one or more node categories. If left empty, the pods will be scheduled on any available node, depending on the cluster s capacity.  | string | No |
+<!-- AUTO:END -->
 
 
 

@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters:  (be sure to scroll to right)
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | Possible Values | 
 | ----------------------- | ----------------------    | ------------------  | :------: | ------------------------------------ | :----------------:  | 
 `--action` | action performed on the node, visit https://github.com/krkn-chaos/krkn/blob/main/docs/node_scenarios.md for more infos | enum | Yes |  | node_start_scenario,node_stop_scenario,node_stop_start_scenario,node_termination_scenario,node_reboot_scenario,stop_kubelet_scenario,stop_start_kubelet_scenario,restart_kubelet_scenario,node_crash_scenario,stop_start_helper_node_scenario | 
@@ -38,6 +39,7 @@ Scenario specific parameters:  (be sure to scroll to right)
 `--azure-client-id` | Azure Client ID | string(secret) | No | 
 `--azure-subscription-id` | Azure Subscription ID | string (secret)| No | 
 `--gcp-application-credentials` | GCP application credentials file location | file | No | 
+<!-- AUTO:END -->
 
 NOTE: The secret string types will be masked when scenario is ran
 

@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--traffic-type` | Selects the network chaos scenario type can be ingress or egress | enum | Yes | ingress \| egress
@@ -21,6 +22,7 @@ Scenario specific parameters:
 `--target-node-interface` | Dictionary with key as node name(s) and value as a list of its interfaces to test. For example: {ip-10-0-216-2.us-west-2.compute.internal: [ens5]} | string | No |
 `--network-params` | latency, loss and bandwidth are the three supported network parameters to alter for the chaos test. For example: {latency: 50ms, loss: 0.02} | string | No | 
 `--wait-duration` | Ensure that it is at least about twice of test_duration | number| No | 300| 
+<!-- AUTO:END -->
 
 
 #### Parameter Dependencies

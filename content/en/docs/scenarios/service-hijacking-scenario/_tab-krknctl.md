@@ -7,9 +7,11 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--scenario-file-path` | The absolute path of the scenario file compiled following the documentation |file_base64 | Yes |
+<!-- AUTO:END -->
 
 
 A sample scenario file can be found [here](service-hijacking-scenarios-krkn.md#sample-scenario), you'll need to customize it based on your wanted response codes for API calls

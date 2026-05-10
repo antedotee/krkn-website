@@ -6,6 +6,7 @@ krknctl run node-io-hog [--<parameter> <value>]
 
 Can also set any global variable listed [here](../../all-scenario-env-krknctl.md )
 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--chaos-duration` |Set chaos duration (in sec) as desired | number | No | 60 | 
@@ -18,6 +19,7 @@ Can also set any global variable listed [here](../../all-scenario-env-krknctl.md
 `--taints` | List of taints for which tolerations need to be created. For example ["node-role.kubernetes.io/master:NoSchedule"]" | string | No | [] |
 `--number-of-nodes` |restricts the number of selected nodes by the selector | number | No |
 `--image` |The hog container image. Can be changed if the hog image is mirrored on a private repository | string | No | quay.io/krkn-chaos/krkn-hog | 
+<!-- AUTO:END -->
 
 
 

@@ -5,6 +5,7 @@ krknctl run syn-flood [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--packet-size` | The size in bytes of the SYN packet |number | No | 120 |

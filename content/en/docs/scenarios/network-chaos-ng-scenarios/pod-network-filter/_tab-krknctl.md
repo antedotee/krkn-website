@@ -6,6 +6,7 @@ krknctl run pod-network-filter [--<parameter> <value>]
 Can also set any global variable listed [here](../../all-scenario-env-krknctl.md)
 
 
+<!-- AUTO:START id="params" -->
 | Argument          | Type    | Description                                                                 | Required | Default Value                       |
 | :---------------- | :------ | :-------------------------------------------------------------------------- | :------- | :---------------------------------- |
 | `--chaos-duration`| number  | Chaos Duration                                                              | false    | 60                                  |
@@ -22,6 +23,7 @@ Can also set any global variable listed [here](../../all-scenario-env-krknctl.md
 | `--protocols`     | string  | The network protocols that will be filtered                                 | false    | tcp                                 |
 | `--taints`        | string  | Comma-separated taints (tolerations are derived for the workload), e.g. `node-role.kubernetes.io/master:NoSchedule` | false    |                                     |
 | `--service-account`| string | Service account for the Pod Network Filter workload (optional)              | false    |                                     |
+<!-- AUTO:END -->
 
 ### Parameter Format Details
 

@@ -5,6 +5,7 @@ Example scenario file: [io-hog.yml](https://github.com/krkn-chaos/scenarios-hub/
 
 #### `io-hog` options
 In addition to the common [hog scenario options](../_index.md#common-options), you can specify the below options in your scenario configuration to target specific pod IO
+
 | Option                | Type   | Description                                                                                                                                                                                                  |
 |-----------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `io-block-size`       |string| the block size written by the stressor                                                                                                                                                                       |

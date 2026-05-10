@@ -5,6 +5,7 @@ krknctl run node-scenarios [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:  (be sure to scroll to right)
+
 | Parameter      | Description    | Type      | Required |  Default | Possible Values |
 | ----------------------- | ----------------------    | ------------------  | :------: | ------------------------------------ | :----------------:  |
 `--action` | action performed on the node, visit https://github.com/krkn-chaos/krkn/blob/main/docs/node_scenarios.md for more infos | enum | Yes |  | node_start_scenario,node_stop_scenario,node_stop_start_scenario,node_termination_scenario,node_reboot_scenario,stop_kubelet_scenario,stop_start_kubelet_scenario,restart_kubelet_scenario,node_crash_scenario,stop_start_helper_node_scenario |

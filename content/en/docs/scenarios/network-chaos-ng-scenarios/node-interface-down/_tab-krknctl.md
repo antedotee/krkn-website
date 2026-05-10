@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../../all-scenario-env-krknctl.md
 
 ### Node Interface Down Parameters
 
+<!-- AUTO:START id="params" -->
 | Argument             | Type    | Description                                                                                    | Required | Default Value                                    |
 | :------------------- | :------ | :--------------------------------------------------------------------------------------------- | :------- | :----------------------------------------------- |
 | `--chaos-duration`   | number  | Duration in seconds to keep the interface(s) down                                              | false    | 60                                               |
@@ -19,3 +20,4 @@ Can also set any global variable listed [here](../../all-scenario-env-krknctl.md
 | `--interfaces`       | string  | Comma-separated list of interface names to bring down. Leave empty to auto-detect the default interface | false |                                             |
 | `--image`            | string  | The chaos workload container image                                                             | false    | quay.io/redhat-chaos/krkn-ng-tools:latest        |
 | `--taints`           | string  | List of taints for which tolerations need to be created                                        | false    |                                                  |
+<!-- AUTO:END -->

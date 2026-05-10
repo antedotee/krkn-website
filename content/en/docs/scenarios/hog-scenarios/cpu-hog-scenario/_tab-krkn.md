@@ -6,10 +6,12 @@ Example scenario file: [cpu-hog.yml](https://github.com/krkn-chaos/scenarios-hub
 #### `cpu-hog` options
 In addition to the common [hog scenario options](../_index.md#common-options), you can specify the below options in your scenario configuration to specificy the amount of CPU to hog on a certain worker node
 
+<!-- AUTO:START id="params" -->
 | Option  | Type   |Description|
 |---|--------|---|
 | `cpu-load-percentage` | number | the amount of cpu that will be consumed by the hog|
 | `cpu-method` | string | reflects the cpu load strategy adopted by stress-ng, please refer to the stress-ng documentation for all the available options|
+<!-- AUTO:END -->
 
 
 

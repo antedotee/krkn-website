@@ -32,6 +32,7 @@ ex.)
 
 See list of variables that apply to all scenarios [here](/docs/scenarios/all-scenario-env.md) that can be used/set in addition to these scenario specific variables
 
+<!-- AUTO:START id="params" -->
 | Parameter            | Description                                                                                                                      | Type | Default                           |
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------|------|-----------------------------------|
 | TOTAL_CHAOS_DURATION | set chaos duration (in sec) as desired                                                                                           | number | 60                                |
@@ -48,6 +49,7 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 | IMAGE                | the network chaos injection workload container image                                                                             | string | quay.io/krkn-chaos/krkn-network-chaos:latest |
 | TAINTS               | List of taints for which tolerations need to be created. Example: ["node-role.kubernetes.io/master:NoSchedule"] | string | [] |
 | SERVICE_ACCOUNT      | optional service account for the Pod Network Filter workload                                                                     | string | "" |
+<!-- AUTO:END -->
 
 
 **NOTE** In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. For example:

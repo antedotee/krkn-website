@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--cloud-type` | Cloud platform on top of which cluster is running, supported platforms - aws, azure, gcp, vmware, ibmcloud, bm | enum | No | aws | 
@@ -28,6 +29,7 @@ Scenario specific parameters:
 `--azure-client-id` | Azure Client ID | string(secret) | No | 
 `--azure-subscription-id` | Azure Subscription ID | string (secret)| No | 
 `--gcp-application-credentials` | GCP application credentials file location | file | No | 
+<!-- AUTO:END -->
 
 NOTE: The secret string types will be masked when scenario is ran
 

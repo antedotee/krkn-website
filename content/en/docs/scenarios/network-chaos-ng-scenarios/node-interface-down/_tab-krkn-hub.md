@@ -31,6 +31,7 @@ ex.)
 
 See list of variables that apply to all scenarios [here](/docs/scenarios/all-scenario-env.md) that can be used/set in addition to these scenario specific variables
 
+<!-- AUTO:START id="params" -->
 |  Parameter                    | Description                                                           | Default
 |-------------------------------| -----------------------------------------------------------------     | ------------------------------------ |
 | TOTAL_CHAOS_DURATION          | Duration in seconds to keep the interface(s) down                    | 60                                   |
@@ -42,6 +43,7 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 | INTERFACES                    | Comma-separated list of interface names to bring down (e.g. `eth0` or `eth0,bond0`). Leave empty to auto-detect the default interface | "" |
 | NAMESPACE                     | Namespace where the chaos workload pod will be deployed              | default                              |
 | TAINTS                        | List of taints for which tolerations need to be created. Example: `["node-role.kubernetes.io/master:NoSchedule"]` | [] |
+<!-- AUTO:END -->
 
 
 **NOTE** In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. For example:

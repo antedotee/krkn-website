@@ -5,6 +5,7 @@ krknctl run container-scenarios [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--namespace` | Targeted namespace in the cluster | string | No | openshift-etcd |

@@ -5,6 +5,7 @@ krknctl run pod-network-chaos [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required |  Default |
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ |
 `--namespace` | Namespace of the pod to which filter need to be applied  | string | Yes |

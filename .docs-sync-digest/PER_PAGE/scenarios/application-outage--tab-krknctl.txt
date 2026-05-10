@@ -5,6 +5,7 @@ krknctl run application-outages [--<parameter> <value>]
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      | Required    | Default |
 | ----------------------- | ----------------------    | ----------------   | ---------------- | ------------------------------------ |
 `--namespace` | Namespace to target - all application routes will go inaccessible if pod selector is empty | string | True |

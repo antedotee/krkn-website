@@ -5,6 +5,7 @@ krknctl run http-load (optional: --<parameter>:<value> )
 Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 Scenario specific parameters:
+
 | Parameter      | Description    | Type      |  Default |
 | ----------------------- | ----------------------    | ----------------  | ------------------------------------ |
 `--target-endpoints` | Semicolon-separated list of target endpoints. Format: METHOD URL;METHOD URL HEADER1:VAL1,HEADER2:VAL2 BODY. Example: GET https://myapp.example.com/health;POST https://myapp.example.com/api Content-Type:application/json {\"key\":\"value\"} | string | **Required** |

@@ -58,6 +58,7 @@ OR on the command line like example:
 
 See list of variables that apply to all scenarios [here](../all-scenario-env.md) that can be used/set in addition to these scenario specific variables
 
+<!-- AUTO:START id="params" -->
 Parameter               | Description                                                           | Type | Default
 ----------------------- | -----------------------------------------------------------------     | ---- | ------------------------------------ |
 ACTION                  | Action can be one of the [following](/docs/scenarios/node-scenarios/) | enum | node_stop_start_scenario |
@@ -78,6 +79,7 @@ BMC_USER                 | Only needed for Baremetal ( bm ) - IPMI/bmc username 
 BMC_PASSWORD             | Only needed for Baremetal ( bm ) - IPMI/bmc password | string | "" |
 BMC_ADDR                 | Only needed for Baremetal ( bm ) - IPMI/bmc address | string | "" |
 DISKS                    | Comma-separated list of disks for baremetal disk detach/attach scenarios | string | ""                              |
+<!-- AUTO:END -->
 
 {{% alert title="Note" %}}In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. {{% /alert %}}
  For example:

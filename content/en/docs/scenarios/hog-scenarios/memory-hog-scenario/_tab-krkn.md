@@ -6,9 +6,11 @@ Example scenario file: [memory-hog.yml](https://github.com/krkn-chaos/scenarios-
 #### `memory-hog` options
 In addition to the common [hog scenario options](../_index.md#common-options), you can specify the below options in your scenario configuration to specificy the amount of memory to hog on a certain worker node
 
+<!-- AUTO:START id="params" -->
 | Option                | Type   |Description|
 |-----------------------|--------|---|
 |`memory-vm-bytes`| string | the amount of memory that the scenario will try to hog.The size can be specified as % of free space on the file system or in units of Bytes, KBytes, MBytes and GBytes using the suffix b, k, m or g | 
+<!-- AUTO:END -->
 
 
 ### Usage

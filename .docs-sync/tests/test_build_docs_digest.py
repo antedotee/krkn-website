@@ -159,6 +159,37 @@ class TestStripShortcodes:
         assert "<krkn-" not in result
         assert "inside" in result
 
+    # === Slice 0.5 cross-cutting fix M3 — strip HTML comments ===
+
+    def test_strips_auto_markers_from_digest(self):
+        # AUTO:START/END markers are meta-content added by Slice 0.5's
+        # migration — they tell mechanical regen where to write, but they're
+        # noise in the digest the agent reads. Earned from real-corpus
+        # inspection finding M3: markers leaked into PER_PAGE/*.txt.
+        text = (
+            "Before.\n"
+            '<!-- AUTO:START id="params" -->\n'
+            "Parameter | Description |\n"
+            "| --- | --- |\n"
+            "| foo | bar |\n"
+            "<!-- AUTO:END -->\n"
+            "After.\n"
+        )
+        result = strip_shortcodes(text)
+        assert "AUTO:START" not in result
+        assert "AUTO:END" not in result
+        # Inner table content preserved
+        assert "Parameter | Description" in result
+
+    def test_strips_arbitrary_html_comments(self):
+        # General case — any <!-- ... --> is meta. Don't leak.
+        text = "Before. <!-- TODO: refactor this --> After."
+        result = strip_shortcodes(text)
+        assert "<!--" not in result
+        assert "-->" not in result
+        assert "Before." in result
+        assert "After." in result
+
     def test_does_not_strip_non_krkn_html_tags(self):
         # We must not over-match. Standard HTML stays.
         text = "<a href=\"x\">link</a> <strong>bold</strong> <details>d</details>"

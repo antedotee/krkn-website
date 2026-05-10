@@ -7,6 +7,7 @@ Can also set any global variable listed [here](../all-scenario-env-krknctl.md)
 
 
 Scenario specific parameters: 
+<!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
 `--object-type` | Object to target. Supported options `pod` or `node` |enum| No | pod |
@@ -15,6 +16,7 @@ Scenario specific parameters:
 `--object-names` | List of the names of pods or nodes you want to skew |string| No | |
 `--container-name` | Container in the specified pod to target in case the pod has multiple containers running. Random container is picked if empty |string | No | 
 `--namespace` | Namespace of the pods you want to skew, need to be set only if setting a specific pod name |string| No |
+<!-- AUTO:END -->
 
 
 

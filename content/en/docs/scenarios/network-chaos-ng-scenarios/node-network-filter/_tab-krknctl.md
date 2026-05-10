@@ -8,6 +8,7 @@ Can also set any global variable listed [here](../../all-scenario-env-krknctl.md
 
 krknctl marks `--ingress` and `--egress` as required flags (you should pass both). **Values:** at least one of `--ingress` or `--egress` must be `true`; both may be `true` to filter incoming and outgoing traffic.
 
+<!-- AUTO:START id="params" -->
 | Argument          | Type    | Description                                                                 | Required | Default Value                       |
 | :---------------- | :------ | :-------------------------------------------------------------------------- | :------- | :---------------------------------- |
 | `--chaos-duration`| number  | Chaos duration in seconds                                                   | false    | 60                                  |
@@ -24,6 +25,7 @@ krknctl marks `--ingress` and `--egress` as required flags (you should pass both
 | `--protocols`     | string  | Network protocols to filter: `tcp`, `udp`, or `tcp,udp`                     | false    | tcp                                 |
 | `--taints`        | string  | Comma-separated **taints** (tolerations are derived for the workload). Same notation as elsewhere in Network Chaos NG docs, e.g. `node-role.kubernetes.io/master:NoSchedule` | false    |                                     |
 | `--service-account`| string | Service account for the workload (optional)                                 | false    |                                     |
+<!-- AUTO:END -->
 
 ### Parameter Format Details
 
