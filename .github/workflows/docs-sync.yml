@@ -81,6 +81,20 @@ jobs:
           hugo-version: '0.146.0'
           extended: true
 
+      # The Docsy theme uses `resources.PostCSS` to compile its main.css,
+      # which requires Node + the postcss-cli/autoprefixer binaries. Without
+      # this, Hugo fails the build with "binary with name 'postcss' not found
+      # using npx" — Stage 3 then trips EXIT_HUGO_FAILED. The site's own
+      # package.json already lists postcss-cli and autoprefixer as
+      # devDependencies, so `npm install` is enough.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install PostCSS toolchain (Docsy build dep)
+        run: npm install
+
       - name: Initialize Hugo modules
         run: |
           hugo mod tidy 2>/dev/null || true

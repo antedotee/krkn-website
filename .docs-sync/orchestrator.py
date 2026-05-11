@@ -485,6 +485,10 @@ def run_pipeline(
         result = run_command_safe(["bash", str(hook_path)], check=False)
         if result.returncode != 0:
             print(f"[Stage 3] FAIL — Hugo build broke after regen.", file=sys.stderr)
+            # Hugo writes most errors (build/template/PostCSS) to STDOUT, not
+            # stderr, especially when running with --quiet. Dump both so the
+            # CI log shows the real failure cause.
+            print(f"  stdout: {sanitize_output(result.stdout)}", file=sys.stderr)
             print(f"  stderr: {sanitize_output(result.stderr)}", file=sys.stderr)
             # Mark every regen-done scenario as failed_hugo so the PR shows
             # the build-break, then persist before returning.
