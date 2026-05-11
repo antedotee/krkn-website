@@ -62,15 +62,16 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 <!-- AUTO:START id="params" -->
 Parameter               | Description                                                           | Type | Default
 ----------------------- | -----------------------------------------------------------------     | ---- | ------------------------------------ |
-NAMESPACE               | Targeted namespace in the cluster ( supports regex )                                     | string | openshift-.*                         |
-POD_LABEL               | Label of the pod(s) to target                                         | string | ""                                   |
-EXCLUDE_LABEL           | Pods matching this label will be excluded from the chaos even if they match other criteria | string | "" |
-NAME_PATTERN            | Regex pattern to match the pods in NAMESPACE  when POD_LABEL is not specified | string | .* |
-DISRUPTION_COUNT        | Number of pods to disrupt                                             | number | 1                                    |
-KILL_TIMEOUT            | Timeout to wait for the target pod(s) to be removed in seconds        | number | 180                                  |
-EXPECTED_RECOVERY_TIME           | Fails if the pod disrupted do not recover within the timeout set      | number | 120                                  |
-NODE_LABEL_SELECTOR           | Label of the node(s) to target                                         | string | ""                                   |
-NODE_NAMES            | Name of the node(s) to target. Example: ["worker-node-1","worker-node-2","master-node-1"]                                         | string | []                                   |
+NAMESPACE | Targeted namespace in the cluster ( supports regex ) | string | openshift-*
+NODE_NAMES | Node names to target | string | 
+NODE_LABEL_SELECTOR | Label selector to target nodes | string | 
+POD_LABEL | Label of the pod(s) to target | string | 
+EXCLUDE_LABEL | Label for excluding one or more pods from chaos | string | 
+NAME_PATTERN | Regex pattern to match the pods in NAMESPACE when POD_LABEL is not specified | string | .*
+DISRUPTION_COUNT | Number of pods to disrupt | number | 2
+KILL_TIMEOUT | Timeout to wait for the target pod(s) to be removed in seconds | number | 180
+EXPECTED_RECOVERY_TIME | Fails if the pod disrupted do not recover within the timeout set | number | 120
+SMOKE_TEST_FLAG | Auto-added by smoke-test plan A1 to verify docs PR opens cleanly; safe to revert after smoke test. | string | remove-me
 <!-- AUTO:END -->
 
 {{% alert title="Note" %}} Set NAMESPACE environment variable to `openshift-.*` to pick and disrupt pods randomly in openshift system namespaces, the DAEMON_MODE can also be enabled to disrupt the pods every x seconds in the background to check the reliability.{{% /alert %}}

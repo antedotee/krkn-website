@@ -65,12 +65,12 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 <!-- AUTO:START id="params" -->
 Parameter               | Description                                                                     | Type | Default
 ----------------------- | -----------------------------------------------------------------               | ---- | ------------------------------------ |
-PVC_NAME                | Targeted PersistentVolumeClaim in the cluster (if null, POD_NAME is required)   | string |                                      |
-POD_NAME                | Targeted pod in the cluster (if null, PVC_NAME is required)                     | string |                                      |
-NAMESPACE               | Targeted namespace in the cluster (required)                                    | string |                                      |
-FILL_PERCENTAGE         | Targeted percentage to be filled up in the PVC                                  | number | 50                                   |
-DURATION                | Duration in seconds with the PVC filled up                                      | number | 60                                   |
-BLOCK_SIZE              | Block size in bytes for the dd command used to fill the PVC                     | number | 102400                               |
+PVC_NAME | Targeted PersistentVolumeClaim in the cluster (if null, POD_NAME is required) | string | 
+POD_NAME | Targeted pod in the cluster (if null, PVC_NAME is required) | string | 
+NAMESPACE | Targeted namespace in the cluster (required) | string | 
+FILL_PERCENTAGE | Targeted percentage to be filled up in the PVC | number | 50
+DURATION | Duration in seconds with the PVC filled up | number | 60
+SMOKE_A4_PARAM | Auto-added across 3 scenarios by docs-sync matrix A4; tests STATE.md handoff. | string | default-a4
 <!-- AUTO:END -->
 
 {{% alert title="Note" %}} In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`.{{% /alert %}}

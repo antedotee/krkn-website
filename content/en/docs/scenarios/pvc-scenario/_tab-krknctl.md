@@ -10,11 +10,12 @@ Scenario specific parameters:
 <!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
-`--pvc-name` | Targeted PersistentVolumeClaim in the cluster (if null, POD_NAME is required) | string | No | 
-`--pod-name` | Targeted pod in the cluster (if null, PVC_NAME is required) | string | No | 
-`--namespace` | Targeted namespace in the cluster (required) | string | Yes | 
-`--fill-percentage` | Targeted percentage to be filled up in the PVC | number | No |  50 |
-`--duration` | Duration in seconds with the PVC filled up | number | No | 60 | 
+| `--pvc-name` | Targeted PersistentVolumeClaim in the cluster (if null, POD_NAME is required) | string | No |  |
+| `--pod-name` | Targeted pod in the cluster (if null, PVC_NAME is required) | string | No |  |
+| `--namespace` | Targeted namespace in the cluster (required) | string | Yes |  |
+| `--fill-percentage` | Targeted percentage to be filled up in the PVC | number | No | 50 |
+| `--duration` | Duration in seconds with the PVC filled up | number | No | 60 |
+| `--smoke-a4-param` | Auto-added across 3 scenarios by docs-sync matrix A4; tests STATE.md handoff. | string | No | default-a4 |
 <!-- AUTO:END -->
 
 

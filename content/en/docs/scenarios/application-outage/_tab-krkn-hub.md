@@ -78,11 +78,12 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 <!-- AUTO:START id="params" -->
 Parameter               | Description                                                           | Type | Default
 ----------------------- | -----------------------------------------------------------------     | ---- | ------------------------------------ |
-DURATION                | Duration in seconds after which the routes will be accessible         | number | 600                                  |
-NAMESPACE               | Namespace to target - all application routes will go inaccessible if pod selector is empty ( Required )| string |  No default |
-POD_SELECTOR            | Pods to target. For example "{app: foo}"                                | string | No default                           |
-EXCLUDE_LABEL            | Pods to exclude after getting list of pods from POD_SELECTOR to target. For example "{app: foo}" | string | No default |
-BLOCK_TRAFFIC_TYPE      | It can be Ingress or Egress or Ingress, Egress ( needs to be a list ) | string | [Ingress]                            |
+DURATION | Set chaos duration (in sec) as desired | number | 600
+NAMESPACE | Namespace to target - all application routes will go inaccessible if pod selector is empty ( Required ) | string | 
+POD_SELECTOR | Pods to target. For example "{app: foo}" | string | 
+EXCLUDE_LABEL | Pods to exclude from targetting. For example "{app: foo}" | string | 
+BLOCK_TRAFFIC_TYPE | It can be [Ingress] or [Egress] or [Ingress, Egress] | string | [Ingress, Egress]
+SMOKE_A4_PARAM | Auto-added across 3 scenarios by docs-sync matrix A4; tests STATE.md handoff. | string | default-a4
 <!-- AUTO:END -->
 
 {{% alert title="Note" %}} Defining the `NAMESPACE` parameter is required for running this scenario while the pod_selector is optional. In case of using pod selector to target a particular application, make sure to define it using the following format with a space between key and value: "{key: value}". {{% /alert %}}
