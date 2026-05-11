@@ -40,6 +40,7 @@ from typing import Optional
 from agent.draft_new_scenario import draft as draft_new_scenario_prose
 from agent.judge import judge as judge_draft, JUDGE_VERDICT_FLAGGED
 from discovery import path_gate, digest_diff, GateResult
+from extractors.cerberus import extract as extract_cerberus
 from extractors.krkn_ai import extract as extract_krkn_ai
 from extractors.krkn_hub import extract as extract_krkn_hub, Scenario
 from github_ops import fetch_upstream_digest, get_changed_paths
@@ -86,13 +87,14 @@ EXIT_ERROR = 20
 _EXTRACTORS = {
     "krkn-hub": extract_krkn_hub,
     "krkn-ai": extract_krkn_ai,
+    "cerberus": extract_cerberus,
 }
 
 # Upstreams registered in repo-map.yaml but whose extractor is still TODO.
 # Dispatches from these exit cleanly with EXIT_EXTRACTOR_DEFERRED instead
 # of EXIT_ERROR — the path gate matters even when we can't yet sync, so
 # we don't want noisy workflow failures during the rollout window.
-_DEFERRED_UPSTREAMS = frozenset({"cerberus", "krknctl", "krkn"})
+_DEFERRED_UPSTREAMS = frozenset({"krknctl", "krkn"})
 
 # Upstreams whose docs live under `content/en/docs/scenarios/<slug>/` with
 # the `_tab-krkn-hub.md` / `_tab-krknctl.md` split. Only these are eligible
