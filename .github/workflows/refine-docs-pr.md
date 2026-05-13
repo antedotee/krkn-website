@@ -7,7 +7,6 @@ on:
 
 if: >
   github.event.issue.pull_request != null &&
-  contains(github.event.comment.body, '@krkn-docs-sync') &&
   contains(github.event.issue.labels.*.name, 'automated-docs')
 
 permissions:
@@ -51,15 +50,21 @@ safe-outputs:
 
 A reviewer mentioned `@krkn-docs-sync` on PR #${{ github.event.issue.number }} of `${{ github.repository }}`.
 
-## Comment body
-
-"${{ github.event.comment.body }}"
-
 ## Triggering PR
 
 - **Number:** #${{ github.event.issue.number }}
-- **URL:** ${{ github.event.issue.html_url }}
-- **Commenter:** @${{ github.event.comment.user.login }}
+- **Title:** ${{ github.event.issue.title }}
+- **Repository:** ${{ github.repository }}
+- **Triggering comment ID:** ${{ github.event.comment.id }}
+
+## How to read the comment
+
+You do NOT have the comment text pre-substituted into this prompt (security). The workflow runs on EVERY comment to an `automated-docs`-labeled PR, so your VERY FIRST action must be to fetch the comment and check whether it actually mentions the bot:
+
+1. Call the `github` MCP `issue_comment_read` tool with `owner` = the org-part of `${{ github.repository }}`, `repo` = the repo-part, `comment_id` = `${{ github.event.comment.id }}`.
+2. Read the returned `body` field.
+3. **IF the body does NOT contain the literal substring `@krkn-docs-sync`, STOP IMMEDIATELY. Do nothing. Do not call any safe-output. Exit.**
+4. Otherwise read the returned `user.login` field for the acknowledgement reply later.
 
 ## Rules — read first
 
@@ -70,14 +75,20 @@ A reviewer mentioned `@krkn-docs-sync` on PR #${{ github.event.issue.number }} o
 
 ## Steps
 
-### 1. Read the PR's current state
+### 1. Read the comment
+
+Fetch the triggering comment as described in "How to read the comment" above. Extract:
+- The comment body (the actual instruction from the reviewer)
+- The author login (for the acknowledgement reply)
+
+### 2. Read the PR's current state
 
 Use the `github` toolset to:
 - Fetch PR #${{ github.event.issue.number }} with `pull_request_read` — note the branch name and head SHA.
 - Fetch the PR diff with `list_files` — record exactly which files the PR currently touches.
 - Read the PR body. Find the line beginning with `**Triggered by:**` — that's the upstream PR link. Keep it for context if needed.
 
-### 2. Interpret the comment
+### 3. Interpret the comment
 
 Identify what the reviewer wants. Common shapes:
 
@@ -88,15 +99,15 @@ Identify what the reviewer wants. Common shapes:
 
 If the request is unclear: STOP. Use `add_comment` to ask a clarifying question. Do not push.
 
-### 3. Apply the change
+### 4. Apply the change
 
-Use `edit` on files already in the PR's diff (Step 1). If the request explicitly asks to touch a NEW file inside `content/en/docs/krknctl/` AND that file already exists, that is allowed. Anywhere else, ask first.
+Use `edit` on files already in the PR's diff (Step 2). If the request explicitly asks to touch a NEW file inside `content/en/docs/krknctl/` AND that file already exists, that is allowed. Anywhere else, ask first.
 
-### 4. Push the change
+### 5. Push the change
 
 Call the `push_to_pull_request_branch` MCP tool from the safe-outputs server. Pushing will validate the PR's `title-prefix` (`[docs-sync] `) and `automated-docs` label before accepting the push.
 
-### 5. Acknowledge
+### 6. Acknowledge
 
 Call `add_comment` with a one-paragraph summary of what changed. Example:
 
