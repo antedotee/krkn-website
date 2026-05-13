@@ -20,6 +20,11 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip-aw-compile]')"
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Default GITHUB_TOKEN cannot push to .github/workflows/* (it lacks the
+          # `workflows` permission). Use a PAT scoped to this repo with
+          # Contents:R/W + Workflows:R/W instead.
+          token: ${{ secrets.GH_AW_COMPILE_PAT }}
 
       - name: Install gh-aw extension
         env:
