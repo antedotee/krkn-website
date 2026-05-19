@@ -61,11 +61,11 @@ See list of variables that apply to all scenarios [here](/docs/scenarios/all-sce
 <!-- AUTO:START id="params" -->
 Parameter               | Description                                                           | Type | Default
 ----------------------- | -----------------------------------------------------------------     | ---- | ------------------------------------ |
-LABEL_SELECTOR          | Label of the namespace to target. Set this parameter only if NAMESPACE is not set                                       | string |     ""                     |
-NAMESPACE               | Name of the namespace you want to target. Set this parameter only if LABEL_SELECTOR is not set  | string | "openshift-etcd"                   |
-SLEEP                   | Number of seconds to wait before polling to see if namespace exists again         | number | 15                                    |
-DELETE_COUNT            | Number of namespaces to kill in each run, based on matching namespace and label specified | number | 1 |
-RUNS                    | Number of runs to execute the action           | number | 1                                    |
+NAMESPACE | Targeted namespace in the cluster (required) | string | openshift-etcd
+LABEL_SELECTOR | Label of the namespace to target. Set this parameter only if NAMESPACE is not set | string | 
+DELETE_COUNT | Number of namespaces to kill in each run, based on matching namespace and label specified | number | 1
+RUNS | Number of runs to execute the action | number | 1
+WAIT_DURATION | Seconds to wait between each run when runs > 1. Lets dependent resources stabilize before the next disruption. | number | 30
 <!-- AUTO:END -->
 
 
