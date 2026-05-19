@@ -10,10 +10,11 @@ Scenario specific parameters:
 <!-- AUTO:START id="params" -->
 | Parameter      | Description    | Type      | Required |  Default | 
 | ----------------------- | ----------------------    | ----------------  | :------: | ------------------------------------ | 
-`--namespace` | Targeted namespace in the cluster (required) |string | No | openshift-etcd | 
-`--label-selector` | Label of the namespace to target. Set this parameter only if NAMESPACE is not set |string | No | 
-`--delete-count` | Number of namespaces to kill in each run, based on matching namespace and label specified |number | No | 1 | 
-`--runs` | Number of runs to execute the action |number | No | 1 |
+| `--namespace` | Targeted namespace in the cluster (required) | string | No | openshift-etcd |
+| `--label-selector` | Label of the namespace to target. Set this parameter only if NAMESPACE is not set | string | No |  |
+| `--delete-count` | Number of namespaces to kill in each run, based on matching namespace and label specified | number | No | 1 |
+| `--runs` | Number of runs to execute the action | number | No | 1 |
+| `--wait-duration` | Seconds to wait between each run when runs > 1. Lets dependent resources stabilize before the next disruption. | number | No | 30 |
 <!-- AUTO:END -->
 
 
